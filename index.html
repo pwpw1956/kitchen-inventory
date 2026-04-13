@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#185FA5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kitchen Inv">
+<meta name="description" content="Kitchen & Freezer Inventory Manager">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Kitchen Inventory</title>
+<style>
+/* ── Reset & base ── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;color:#1a1a1a;background:#f0f2f5}
+
+/* ── Layout ── */
+#app{height:100vh;display:flex;flex-direction:column;max-width:640px;margin:0 auto;position:relative}
+.topbar{background:#185FA5;color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,0.15)}
+.topbar h1{font-size:17px;font-weight:600;flex:1}
+.topbar .icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tab-bar{display:flex;background:#fff;border-bottom:1px solid #e0e0e0;flex-shrink:0}
+.tab{flex:1;padding:10px 2px;text-align:center;font-size:11px;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;font-weight:500}
+.tab.active{color:#185FA5;border-bottom-color:#185FA5}
+.pages{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page{display:none;padding:12px}
+.page.active{display:block}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.card-title{font-size:11px;font-weight:600;color:#888;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em}
+
+/* ── Form elements ── */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;color:#555;margin-bottom:4px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
+.field textarea{resize:vertical;min-height:60px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all 0.15s}
+.btn:active{transform:scale(0.96)}
+.btn-primary{background:#185FA5;color:#fff}
+.btn-primary:active{background:#0d4a8a}
+.btn-secondary{background:#f0f2f5;color:#1a1a1a;border:1px solid #ddd}
+.btn-danger{background:#c0392b;color:#fff}
+.btn-success{background:#27ae60;color:#fff}
+.btn-warn{background:#e67e22;color:#fff}
+.btn-full{width:100%;margin-bottom:8px}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-icon{width:36px;height:36px;border-radius:50%;background:#f0f2f5;border:1px solid #ddd;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* ── Location chips ── */
+.loc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.loc-chip{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:20px;font-size:13px;background:#f0f2f5;border:1px solid #ddd;cursor:pointer;font-weight:500;transition:all 0.15s}
+.loc-chip.selected{background:#e6f1fb;border-color:#185FA5;color:#185FA5}
+
+/* ── Quantity control ── */
+.qty-row{display:flex;align-items:center;gap:12px}
+.qty-btn{width:36px;height:36px;border-radius:50%;background:#f0f2f5;border:1px solid #ddd;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;line-height:1}
+.qty-val{font-size:22px;font-weight:600;min-width:32px;text-align:center;color:#185FA5}
+
+/* ── Item cards ── */
+.item-card{background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.07);position:relative;border-left:3px solid transparent}
+.item-card.freezer-item{border-left-color:#185FA5}
+.item-card.fridge-item{border-left-color:#17a589}
+.item-card.cupboard-item{border-left-color:#8e44ad}
+.item-card.pantry-item{border-left-color:#d35400}
+.item-card.other-item{border-left-color:#7f8c8d}
+.item-name{font-size:15px;font-weight:600;color:#1a1a1a}
+.item-meta{font-size:12px;color:#888;margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-blue{background:#e6f1fb;color:#185FA5}
+.badge-teal{background:#d5f5e3;color:#1e8449}
+.badge-purple{background:#f4ecf7;color:#6c3483}
+.badge-amber{background:#fef9e7;color:#9a7d0a}
+.badge-gray{background:#f0f2f5;color:#555}
+.badge-red{background:#fdedec;color:#c0392b}
+.exp-warn{color:#e67e22;font-size:12px;font-weight:500;margin-top:3px}
+.exp-danger{color:#c0392b;font-size:12px;font-weight:500;margin-top:3px}
+
+/* ── Search ── */
+.search-row{display:flex;gap:8px;margin-bottom:10px}
+.search-row input{flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit}
+.search-row select{padding:10px 32px 10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;color:#1a1a1a;font-family:inherit}
+
+/* ── Section headings ── */
+.section-head{font-size:12px;font-weight:600;color:#888;padding:8px 0 6px;border-bottom:1px solid #e8e8e8;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;display:flex;justify-content:space-between;align-items:center}
+
+/* ── Voice ── */
+.voice-btn{width:72px;height:72px;border-radius:50%;background:#185FA5;border:none;color:#fff;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 12px rgba(24,95,165,0.3)}
+.voice-btn.listening{background:#c0392b;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.4)}60%{box-shadow:0 0 0 16px rgba(192,57,43,0)}}
+.voice-result{min-height:52px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:12px;font-size:14px;color:#555;margin:12px 0;line-height:1.5}
+
+/* ── Scanner ── */
+.scanner-box{border:2px dashed #c5d8ef;border-radius:12px;padding:16px;text-align:center;background:#f8fbff;margin-bottom:12px}
+#scanner-video{width:100%;border-radius:8px;max-height:200px;object-fit:cover;display:none}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── Modals ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:16px;color:#1a1a1a}
+.modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* ── Sync status ── */
+.sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+.sync-dot.ok{background:#2ecc71}
+.sync-dot.warn{background:#f39c12}
+.sync-dot.err{background:#e74c3c}
+.sync-dot.spin{background:#3498db;animation:spin-pulse 1s ease-in-out infinite}
+@keyframes spin-pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ── Empty state ── */
+.empty{text-align:center;padding:48px 20px;color:#aaa}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:14px;line-height:1.6}
+
+/* ── Config screen ── */
+#config-screen{display:none;position:fixed;inset:0;background:#f0f2f5;z-index:1000;overflow-y:auto;padding:24px 16px}
+#config-screen.visible{display:block}
+.config-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.config-card h2{font-size:16px;font-weight:600;margin-bottom:6px;color:#1a1a1a}
+.config-card p{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}
+.config-card code{font-family:monospace;background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:13px;color:#c0392b}
+.step-num{display:inline-flex;width:24px;height:24px;border-radius:50%;background:#185FA5;color:#fff;font-size:12px;font-weight:700;align-items:center;justify-content:center;margin-right:8px;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;margin-bottom:10px;font-size:13px;color:#444;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- Firebase config screen (shown until configured) -->
+<div id="config-screen">
+  <div style="max-width:500px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:48px">❄️</div>
+      <h1 style="font-size:22px;font-weight:700;color:#1a1a1a;margin-top:8px">Kitchen Inventory</h1>
+      <p style="font-size:14px;color:#666;margin-top:6px">One-time Firebase setup needed</p>
+    </div>
+
+    <div class="config-card">
+      <h2>📋 Step-by-step setup</h2>
+      <p>This takes about 5–10 minutes and only needs to be done once. You'll need a Google account.</p>
+      <div class="step-row"><span class="step-num">1</span><span>Go to <strong>console.firebase.google.com</strong> and sign in with your Google account.</span></div>
+      <div class="step-row"><span class="step-num">2</span><span>Click <strong>"Add project"</strong>, name it <em>kitchen-inventory</em>, disable Google Analytics when asked (not needed), and click <strong>Create project</strong>.</span></div>
+      <div class="step-row"><span class="step-num">3</span><span>In the left sidebar click <strong>Firestore Database</strong>, then <strong>Create database</strong>. Choose <strong>Start in test mode</strong> and pick a server location closest to you (e.g. <em>europe-west2</em> for UK). Click <strong>Enable</strong>.</span></div>
+      <div class="step-row"><span class="step-num">4</span><span>Back on the project overview page, click the <strong>web icon &lt;/&gt;</strong> to add a web app. Give it the nickname <em>kitchen-app</em>. <strong>Do not</strong> enable Firebase Hosting. Click <strong>Register app</strong>.</span></div>
+      <div class="step-row"><span class="step-num">5</span><span>You'll see a block of code with your config. Copy the values for <code>apiKey</code>, <code>authDomain</code>, <code>projectId</code>, and <code>appId</code> into the boxes below.</span></div>
+    </div>
+
+    <div class="config-card">
+      <h2>🔑 Your Firebase credentials</h2>
+      <p>Paste the values from the Firebase console here. These are stored only on your device.</p>
+      <div class="field"><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIzaSy..."></div>
+      <div class="field"><label>Auth Domain</label><input type="text" id="cfg-authDomain" placeholder="your-project.firebaseapp.com"></div>
+      <div class="field"><label>Project ID</label><input type="text" id="cfg-projectId" placeholder="kitchen-inventory-xxxxx"></div>
+      <div class="field"><label>App ID</label><input type="text" id="cfg-appId" placeholder="1:123456:web:abcdef"></div>
+      <button class="btn btn-primary btn-full" onclick="saveFirebaseConfig()" style="margin-top:8px;font-size:16px;padding:14px">Connect to Firebase →</button>
+      <p id="cfg-error" style="color:#c0392b;font-size:13px;margin-top:8px;display:none"></p>
+    </div>
+
+    <div class="config-card">
+      <h2>📱 Installing on your phone</h2>
+      <div class="step-row"><span class="step-num">1</span><span>Open this file in <strong>Chrome</strong> on your phone (not Samsung Browser).</span></div>
+      <div class="step-row"><span class="step-num">2</span><span>Tap the <strong>three-dot menu</strong> (⋮) in Chrome, then tap <strong>"Add to Home screen"</strong>.</span></div>
+      <div class="step-row"><span class="step-num">3</span><span>Tap <strong>Add</strong>. The app icon will appear on your home screen like a regular app.</span></div>
+      <div class="step-row"><span class="step-num">4</span><span>Do the same on your wife's phone — both phones will then share the same data automatically.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Main app -->
+<div id="app" style="display:none">
+  <div class="topbar">
+    <span style="font-size:22px">❄️</span>
+    <h1>Kitchen Inventory</h1>
+    <span id="sync-indicator" title="Sync status" style="font-size:12px;display:flex;align-items:center;gap:4px;opacity:0.85"><span class="sync-dot spin" id="sync-dot"></span><span id="sync-text">Connecting</span></span>
+    <button class="icon-btn" onclick="showModal('modal-locations')" title="Manage locations" style="font-size:16px">⚙️</button>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" id="tab-add" onclick="switchTab('add')">＋ Add</div>
+    <div class="tab" id="tab-drawer" onclick="switchTab('drawer')">📍 Location</div>
+    <div class="tab" id="tab-browse" onclick="switchTab('browse')">🔍 Browse</div>
+    <div class="tab" id="tab-voice" onclick="switchTab('voice')">🎙 Voice</div>
+  </div>
+
+  <div class="pages">
+
+    <!-- ADD TAB -->
+    <div class="page active" id="page-add">
+      <div class="card">
+        <div class="card-title">Scan barcode or enter manually</div>
+        <div class="scanner-box" id="scanner-box">
+          <video id="scanner-video" playsinline muted autoplay></video>
+          <div id="scanner-ui">
+            <div style="font-size:36px;margin-bottom:8px">📷</div>
+            <p style="font-size:13px;color:#888;margin-bottom:12px">Scan a barcode to auto-fill product details</p>
+            <button class="btn btn-primary" onclick="startScan()" id="btn-scan-start">Scan barcode</button>
+          </div>
+          <div id="scanner-active" style="display:none;margin-top:8px">
+            <button class="btn btn-secondary" onclick="stopScan()">✕ Stop scanning</button>
+          </div>
+        </div>
+        <div class="field"><label>Item name / description *</label><input type="text" id="add-name" placeholder="e.g. Peas, Leftover lasagne, Chicken breast…" autocomplete="off"></div>
+        <div class="field"><label>Barcode (auto-filled or leave blank)</label><input type="text" id="add-barcode" placeholder="Optional" inputmode="numeric"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Location *</div>
+        <div class="loc-chips" id="add-loc-chips"></div>
+        <div id="add-subloc-row" style="display:none;margin-top:8px">
+          <div class="field"><label>Drawer / shelf / section</label><input type="text" id="add-subloc" placeholder="e.g. Top drawer, Middle shelf, Door…"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Quantity &amp; dates</div>
+        <div class="field">
+          <label>Quantity</label>
+          <div class="qty-row">
+            <button class="qty-btn" onclick="changeQty('add',-1)">−</button>
+            <span class="qty-val" id="add-qty">1</span>
+            <button class="qty-btn" onclick="changeQty('add',1)">+</button>
+            <span style="font-size:13px;color:#888;margin-left:4px">portion(s) / pack(s)</span>
+          </div>
+        </div>
+        <div class="field"><label>Date added</label><input type="date" id="add-date-in"></div>
+        <div class="field"><label>Use by / best before (optional)</label><input type="date" id="add-date-exp"></div>
+        <div class="field"><label>Notes (optional)</label><textarea id="add-notes" placeholder="Any extra info…"></textarea></div>
+      </div>
+
+      <button class="btn btn-primary btn-full" style="font-size:16px;padding:14px" onclick="saveNewItem()">✓ Save item</button>
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- LOCATION TAB -->
+    <div class="page" id="page-drawer">
+      <div class="card">
+        <div class="card-title">Choose location</div>
+        <div class="loc-chips" id="drawer-loc-chips"></div>
+      </div>
+      <div id="drawer-controls" style="display:none">
+        <div class="card">
+          <div class="card-title">Filter &amp; actions</div>
+          <div class="field"><label>Filter by drawer / shelf</label><input type="text" id="drawer-filter" placeholder="e.g. Bottom drawer, Top shelf…" oninput="renderDrawerItems()"></div>
+          <button class="btn btn-primary" onclick="openBulkModal()">＋ Bulk add items here</button>
+        </div>
+      </div>
+      <div id="drawer-items"></div>
+    </div>
+
+    <!-- BROWSE TAB -->
+    <div class="page" id="page-browse">
+      <div class="search-row">
+        <input type="text" id="browse-search" placeholder="Search items…" oninput="renderBrowse()">
+        <select id="browse-sort" onchange="renderBrowse()">
+          <option value="name">A–Z</option>
+          <option value="loc">Location</option>
+          <option value="added">Date added</option>
+          <option value="expiry">Expiry</option>
+        </select>
+      </div>
+      <div id="browse-list"></div>
+    </div>
+
+    <!-- VOICE TAB -->
+    <div class="page" id="page-voice">
+      <div class="card" style="text-align:center">
+        <div class="card-title">Voice input</div>
+        <p style="font-size:13px;color:#666;margin-bottom:12px">Pick a location, then tap the microphone and say items out loud. Say <strong>"done"</strong> to stop. Items go into a queue so you can review before saving.</p>
+        <div class="loc-chips" id="voice-loc-chips" style="justify-content:center;margin-bottom:12px"></div>
+        <div class="field"><label>Drawer / shelf (optional)</label><input type="text" id="voice-subloc" placeholder="e.g. Bottom drawer"></div>
+        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">🎙</button>
+        <p id="voice-status" style="font-size:13px;color:#888;margin:10px 0 0">Tap to start listening</p>
+        <div class="voice-result" id="voice-result">Speech will appear here…</div>
+      </div>
+
+      <div id="voice-queue-container" style="display:none">
+        <div class="section-head">
+          <span id="voice-queue-title">Queue</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-success btn-sm" onclick="saveVoiceQueue()">✓ Save all</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearVoiceQueue()">Clear</button>
+          </div>
+        </div>
+        <div id="voice-queue-list"></div>
+      </div>
+
+      <div class="card" style="background:#f8fbff;border:1px solid #d4e8f7">
+        <div class="card-title">💡 Tips</div>
+        <p style="font-size:13px;color:#555;line-height:1.6">Speak item names clearly and naturally: <em>"chicken breasts"</em>, <em>"leftover soup"</em>, <em>"fish fingers"</em>. Separate multiple items with a short pause or say <em>"and"</em>. Say <strong>"done"</strong> or <strong>"finish"</strong> to stop. Works best in Chrome on Android.</p>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+</div><!-- /app -->
+
+<div class="toast" id="toast"></div>
+
+<!-- LOCATIONS MODAL -->
+<div class="modal-overlay" id="modal-locations">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Manage locations</div>
+    <div id="loc-manage-list"></div>
+    <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
+    <p style="font-size:13px;color:#666;margin-bottom:10px;font-weight:500">Add new location</p>
+    <div style="display:flex;gap:8px">
+      <input type="text" id="new-loc-name" placeholder="Name (e.g. Chest Freezer)" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px">
+      <select id="new-loc-type" style="padding:10px 28px 10px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22%3E%3Cpath d=%22M1 1l5 5 5-5%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 8px center;-webkit-appearance:none">
+        <option value="freezer">Freezer</option>
+        <option value="fridge">Fridge</option>
+        <option value="cupboard">Cupboard</option>
+        <option value="pantry">Pantry</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="addLocation()">Add location</button>
+    <button class="btn btn-secondary btn-full" onclick="closeModal('modal-locations')">Close</button>
+  </div>
+</div>
+
+<!-- EDIT ITEM MODAL -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit item</div>
+    <div class="field"><label>Name *</label><input type="text" id="edit-name"></div>
+    <div class="field"><label>Location</label><div class="loc-chips" id="edit-loc-chips"></div></div>
+    <div class="field"><label>Drawer / shelf</label><input type="text" id="edit-subloc"></div>
+    <div class="field">
+      <label>Quantity</label>
+      <div class="qty-row">
+        <button class="qty-btn" onclick="changeQty('edit',-1)">−</button>
+        <span class="qty-val" id="edit-qty">1</span>
+        <button class="qty-btn" onclick="changeQty('edit',1)">+</button>
+      </div>
+    </div>
+    <div class="field"><label>Date added</label><input type="date" id="edit-date-in"></div>
+    <div class="field"><label>Use by / best before</label><input type="date" id="edit-date-exp"></div>
+    <div class="field"><label>Notes</label><textarea id="edit-notes"></textarea></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveEdit()">✓ Save changes</button>
+      <button class="btn btn-danger" onclick="deleteItem()">🗑 Delete</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- BULK ADD MODAL -->
+<div class="modal-overlay" id="modal-bulk">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Bulk add items</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">One item per line. Add a number at the end for quantity, e.g. <em>Chicken breast x3</em> or <em>Fish fingers 6</em></p>
+    <div class="field">
+      <textarea id="bulk-text" style="min-height:160px" placeholder="Peas&#10;Chicken breast x3&#10;Leftover tomato soup&#10;Fish fingers x6&#10;Sausages 8"></textarea>
+    </div>
+    <div class="field"><label>Date added (optional)</label><input type="date" id="bulk-date-in"></div>
+    <div class="btn-row">
+      <button class="btn btn-success" onclick="saveBulk()">✓ Add all items</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-bulk')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── State ──────────────────────────────────────────────────
+let db = null;
+let fbApp = null;
+let unsubItems = null, unsubLocs = null;
+let locations = [];
+let items = [];
+let currentTab = 'add';
+
+let addQtyVal = 1, editQtyVal = 1;
+let addLocId = null, editLocId = null, voiceLocId = null;
+let editingItemId = null;
+let bulkLocId = null, bulkSubLoc = null;
+let voiceQueue = [];
+let recognition = null, isListening = false;
+let scanStream = null, scanRunning = false;
+
+const LOC_ICONS = {freezer:'❄️',fridge:'🧊',cupboard:'🗄️',pantry:'🥫',other:'📦'};
+const LOC_COLORS = {freezer:'badge-blue',fridge:'badge-teal',cupboard:'badge-purple',pantry:'badge-amber',other:'badge-gray'};
+const ITEM_BORDER = {freezer:'freezer-item',fridge:'fridge-item',cupboard:'cupboard-item',pantry:'pantry-item',other:'other-item'};
+
+// ── Firebase config ────────────────────────────────────────
+function loadConfig() {
+  try { return JSON.parse(localStorage.getItem('fb_config') || 'null'); } catch(e) { return null; }
+}
+
+window.saveFirebaseConfig = function() {
+  const cfg = {
+    apiKey: document.getElementById('cfg-apiKey').value.trim(),
+    authDomain: document.getElementById('cfg-authDomain').value.trim(),
+    projectId: document.getElementById('cfg-projectId').value.trim(),
+    appId: document.getElementById('cfg-appId').value.trim(),
+    storageBucket: '',
+    messagingSenderId: ''
+  };
+  if (!cfg.apiKey || !cfg.projectId) {
+    document.getElementById('cfg-error').textContent = 'Please fill in at least the API Key and Project ID.';
+    document.getElementById('cfg-error').style.display = 'block';
+    return;
+  }
+  localStorage.setItem('fb_config', JSON.stringify(cfg));
+  initFirebase(cfg);
+};
+
+async function initFirebase(cfg) {
+  try {
+    fbApp = initializeApp(cfg);
+    db = getFirestore(fbApp);
+    document.getElementById('config-screen').classList.remove('visible');
+    document.getElementById('config-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    startListeners();
+    setSyncStatus('spin', 'Connecting…');
+  } catch(e) {
+    document.getElementById('cfg-error').textContent = 'Connection failed: ' + e.message;
+    document.getElementById('cfg-error').style.display = 'block';
+    localStorage.removeItem('fb_config');
+  }
+}
+
+// ── Firestore listeners ────────────────────────────────────
+function startListeners() {
+  const locQ = query(collection(db, 'locations'), orderBy('name'));
+  unsubLocs = onSnapshot(locQ, snap => {
+    locations = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    if (locations.length === 0) seedDefaultLocations();
+    refreshAllChips();
+    renderDrawerLocs();
+    renderDrawerItems();
+    renderBrowse();
+    setSyncStatus('ok', 'Synced');
+  }, err => { setSyncStatus('err', 'Offline'); });
+
+  const itemQ = query(collection(db, 'items'), orderBy('name'));
+  unsubItems = onSnapshot(itemQ, snap => {
+    items = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderDrawerItems();
+    renderBrowse();
+    setSyncStatus('ok', 'Synced');
+  }, err => { setSyncStatus('err', 'Offline'); });
+}
+
+async function seedDefaultLocations() {
+  const defaults = [
+    {name:'Main Freezer', type:'freezer'},
+    {name:'Fridge', type:'fridge'},
+    {name:'Pantry', type:'pantry'}
+  ];
+  for (const l of defaults) {
+    await addDoc(collection(db, 'locations'), l);
+  }
+}
+
+// ── Sync indicator ─────────────────────────────────────────
+function setSyncStatus(state, text) {
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot ' + state;
+  document.getElementById('sync-text').textContent = text;
+}
+
+// ── Tabs ───────────────────────────────────────────────────
+window.switchTab = function(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  currentTab = tab;
+  if (tab === 'drawer') { renderDrawerLocs(); renderDrawerItems(); }
+  if (tab === 'browse') renderBrowse();
+  if (tab === 'voice') renderVoiceLocs();
+};
+
+// ── Toast ──────────────────────────────────────────────────
+function toast(msg, dur=2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), dur);
+}
+
+// ── Modals ─────────────────────────────────────────────────
+window.showModal = function(id) { document.getElementById(id).classList.add('open'); };
+window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ── Qty controls ───────────────────────────────────────────
+window.changeQty = function(ctx, delta) {
+  if (ctx === 'add') { addQtyVal = Math.max(1, addQtyVal + delta); document.getElementById('add-qty').textContent = addQtyVal; }
+  else { editQtyVal = Math.max(1, editQtyVal + delta); document.getElementById('edit-qty').textContent = editQtyVal; }
+};
+
+// ── Location chips renderer ────────────────────────────────
+function renderChips(containerId, selectedId, onSelect) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = locations.map(l =>
+    `<span class="loc-chip${selectedId === l.id ? ' selected' : ''}" onclick="(${onSelect.toString()})('${l.id}')">${LOC_ICONS[l.type]||'📦'} ${l.name}</span>`
+  ).join('');
+}
+
+function refreshAllChips() {
+  renderChips('add-loc-chips', addLocId, id => { addLocId = id; refreshAllChips(); document.getElementById('add-subloc-row').style.display = 'block'; });
+  renderVoiceLocs();
+}
+
+function renderDrawerLocs() {
+  renderChips('drawer-loc-chips', null, id => {
+    bulkLocId = id;
+    document.getElementById('drawer-controls').style.display = 'block';
+    document.getElementById('drawer-filter').value = '';
+    // mark chip selected
+    document.querySelectorAll('#drawer-loc-chips .loc-chip').forEach(c => c.classList.remove('selected'));
+    event.target.closest('.loc-chip').classList.add('selected');
+    renderDrawerItems(id);
+  });
+}
+
+window.renderDrawerItems = function(locId) {
+  const activeLoc = locId || bulkLocId;
+  const el = document.getElementById('drawer-items');
+  if (!activeLoc) { el.innerHTML = ''; return; }
+  const filter = (document.getElementById('drawer-filter')?.value || '').toLowerCase();
+  let list = items.filter(i => i.locationId === activeLoc);
+  if (filter) list = list.filter(i => (i.name + ' ' + (i.sublocation||'')).toLowerCase().includes(filter));
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>No items here yet.<br>Tap <strong>Bulk add</strong> to fill this location.</p></div>`;
+    return;
+  }
+  const groups = {};
+  list.forEach(i => { const k = i.sublocation || '(no drawer/shelf specified)'; (groups[k] = groups[k]||[]).push(i); });
+  el.innerHTML = Object.entries(groups).map(([g, arr]) =>
+    `<div class="section-head"><span>${g} <span style="font-weight:400;color:#aaa">(${arr.length})</span></span></div>` +
+    arr.map(i => itemCardHTML(i)).join('')
+  ).join('');
+};
+
+// ── Browse ─────────────────────────────────────────────────
+window.renderBrowse = function() {
+  const q = (document.getElementById('browse-search')?.value || '').toLowerCase();
+  const sort = document.getElementById('browse-sort')?.value || 'name';
+  let list = [...items];
+  if (q) list = list.filter(i => {
+    const loc = locations.find(l => l.id === i.locationId);
+    return (i.name + ' ' + (i.sublocation||'') + ' ' + (loc?.name||'')).toLowerCase().includes(q);
+  });
+  list.sort((a,b) => {
+    if (sort==='name') return (a.name||'').localeCompare(b.name||'');
+    if (sort==='loc') {
+      const la = locations.find(l=>l.id===a.locationId)?.name||'';
+      const lb = locations.find(l=>l.id===b.locationId)?.name||'';
+      return la.localeCompare(lb) || (a.name||'').localeCompare(b.name||'');
+    }
+    if (sort==='added') return (b.dateIn||'').localeCompare(a.dateIn||'');
+    if (sort==='expiry') return (a.dateExp||'9999').localeCompare(b.dateExp||'9999');
+    return 0;
+  });
+  const el = document.getElementById('browse-list');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">${items.length ? '🔍' : '📦'}</div><p>${items.length ? 'No items match your search.' : 'No items yet — go to the Add tab to get started.'}</p></div>`;
+    return;
+  }
+  el.innerHTML = `<div style="font-size:12px;color:#aaa;margin-bottom:8px">${list.length} item${list.length!==1?'s':''}</div>` + list.map(i => itemCardHTML(i)).join('');
+};
+
+// ── Item card HTML ─────────────────────────────────────────
+function itemCardHTML(item) {
+  const loc = locations.find(l => l.id === item.locationId);
+  const locName = loc ? `${LOC_ICONS[loc.type]||'📦'} ${loc.name}` : 'Unknown';
+  const borderClass = ITEM_BORDER[loc?.type] || 'other-item';
+  const badgeClass = LOC_COLORS[loc?.type] || 'badge-gray';
+  const exp = expiryBadge(item.dateExp);
+  return `<div class="item-card ${borderClass}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="flex:1;min-width:0">
+        <div class="item-name">${escHtml(item.name)}</div>
+        <div class="item-meta">
+          <span class="badge ${badgeClass}">${locName}</span>
+          ${item.sublocation ? `<span class="badge badge-gray">📍 ${escHtml(item.sublocation)}</span>` : ''}
+          ${item.qty > 1 ? `<span class="badge badge-teal">×${item.qty}</span>` : ''}
+        </div>
+        ${item.dateIn || item.dateExp ? `<div class="item-meta" style="margin-top:4px">${item.dateIn?'In: '+item.dateIn:''}${item.dateExp?' · Use by: '+item.dateExp:''}</div>` : ''}
+        ${exp ? `<div class="${exp.cls}">${exp.text}</div>` : ''}
+        ${item.notes ? `<div style="font-size:12px;color:#888;margin-top:3px;font-style:italic">${escHtml(item.notes)}</div>` : ''}
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-left:10px;flex-shrink:0" onclick="openEditModal('${item.id}')">Edit</button>
+    </div>
+  </div>`;
+}
+
+function expiryBadge(dateStr) {
+  if (!dateStr) return null;
+  const now = new Date(); now.setHours(0,0,0,0);
+  const exp = new Date(dateStr); exp.setHours(0,0,0,0);
+  const diff = Math.round((exp - now) / 86400000);
+  if (diff < 0) return {cls:'exp-danger', text:`⚠️ Expired ${Math.abs(diff)} day${Math.abs(diff)!==1?'s':''} ago`};
+  if (diff <= 7) return {cls:'exp-warn', text:`⚠️ Expires in ${diff} day${diff!==1?'s':''}`};
+  return null;
+}
+
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+// ── Save new item ──────────────────────────────────────────
+window.saveNewItem = async function() {
+  const name = document.getElementById('add-name').value.trim();
+  if (!name) { toast('⚠️ Please enter an item name'); return; }
+  if (!addLocId) { toast('⚠️ Please choose a location'); return; }
+  const item = {
+    name,
+    barcode: document.getElementById('add-barcode').value.trim(),
+    locationId: addLocId,
+    sublocation: document.getElementById('add-subloc').value.trim(),
+    qty: addQtyVal,
+    dateIn: document.getElementById('add-date-in').value,
+    dateExp: document.getElementById('add-date-exp').value,
+    notes: document.getElementById('add-notes').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    await addDoc(collection(db, 'items'), item);
+    document.getElementById('add-name').value = '';
+    document.getElementById('add-barcode').value = '';
+    document.getElementById('add-notes').value = '';
+    document.getElementById('add-date-exp').value = '';
+    document.getElementById('add-subloc').value = '';
+    addQtyVal = 1; document.getElementById('add-qty').textContent = '1';
+    document.getElementById('add-date-in').value = today();
+    stopScan();
+    toast('✅ Item saved!');
+  } catch(e) { toast('Error saving: ' + e.message); }
+};
+
+// ── Edit modal ─────────────────────────────────────────────
+window.openEditModal = function(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  editingItemId = id;
+  editQtyVal = item.qty || 1;
+  editLocId = item.locationId;
+  document.getElementById('edit-name').value = item.name || '';
+  document.getElementById('edit-subloc').value = item.sublocation || '';
+  document.getElementById('edit-qty').textContent = editQtyVal;
+  document.getElementById('edit-date-in').value = item.dateIn || '';
+  document.getElementById('edit-date-exp').value = item.dateExp || '';
+  document.getElementById('edit-notes').value = item.notes || '';
+  renderChips('edit-loc-chips', editLocId, id => { editLocId = id; renderChips('edit-loc-chips', editLocId, arguments.callee); });
+  showModal('modal-edit');
+};
+
+window.saveEdit = async function() {
+  const name = document.getElementById('edit-name').value.trim();
+  if (!name) { toast('⚠️ Please enter a name'); return; }
+  try {
+    await setDoc(doc(db, 'items', editingItemId), {
+      name,
+      locationId: editLocId,
+      sublocation: document.getElementById('edit-subloc').value.trim(),
+      qty: editQtyVal,
+      dateIn: document.getElementById('edit-date-in').value,
+      dateExp: document.getElementById('edit-date-exp').value,
+      notes: document.getElementById('edit-notes').value.trim(),
+      updatedAt: new Date().toISOString()
+    }, {merge: true});
+    closeModal('modal-edit');
+    toast('✅ Item updated');
+  } catch(e) { toast('Error: ' + e.message); }
+};
+
+window.deleteItem = async function() {
+  if (!confirm('Delete this item?')) return;
+  try {
+    await deleteDoc(doc(db, 'items', editingItemId));
+    closeModal('modal-edit');
+    toast('🗑 Item deleted');
+  } catch(e) { toast('Error: ' + e.message); }
+};
+
+// ── Locations management ───────────────────────────────────
+function renderLocManage() {
+  document.getElementById('loc-manage-list').innerHTML = locations.map(l =>
+    `<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #f0f0f0">
+      <span style="font-size:20px">${LOC_ICONS[l.type]||'📦'}</span>
+      <span style="flex:1;font-weight:500">${escHtml(l.name)}</span>
+      <span class="badge badge-gray" style="font-size:11px">${l.type}</span>
+      <button class="btn btn-secondary btn-sm" onclick="deleteLocation('${l.id}')">✕</button>
+    </div>`
+  ).join('');
+}
+
+window.showModal = function(id) {
+  if (id === 'modal-locations') renderLocManage();
+  document.getElementById(id).classList.add('open');
+};
+
+window.addLocation = async function() {
+  const name = document.getElementById('new-loc-name').value.trim();
+  if (!name) { toast('Enter a location name'); return; }
+  const type = document.getElementById('new-loc-type').value;
+  try {
+    await addDoc(collection(db, 'locations'), {name, type});
+    document.getElementById('new-loc-name').value = '';
+    toast('✅ Location added');
+  } catch(e) { toast('Error: ' + e.message); }
+};
+
+window.deleteLocation = async function(id) {
+  const hasItems = items.some(i => i.locationId === id);
+  if (hasItems && !confirm('This location has items. Delete it and all its items?')) return;
+  try {
+    if (hasItems) {
+      for (const item of items.filter(i => i.locationId === id)) {
+        await deleteDoc(doc(db, 'items', item.id));
+      }
+    }
+    await deleteDoc(doc(db, 'locations', id));
+    renderLocManage();
+    toast('🗑 Location deleted');
+  } catch(e) { toast('Error: ' + e.message); }
+};
+
+// ── Bulk add ───────────────────────────────────────────────
+window.openBulkModal = function() {
+  bulkSubLoc = document.getElementById('drawer-filter').value.trim();
+  document.getElementById('bulk-text').value = '';
+  document.getElementById('bulk-date-in').value = today();
+  showModal('modal-bulk');
+};
+
+window.saveBulk = async function() {
+  const lines = document.getElementById('bulk-text').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if (!lines.length) { toast('Enter at least one item'); return; }
+  if (!bulkLocId) { toast('Select a location first'); return; }
+  const dateIn = document.getElementById('bulk-date-in').value;
+  let count = 0;
+  for (const line of lines) {
+    const m = line.match(/^(.+?)\s+[xX*]?\s*(\d+)$/) || line.match(/^(.+?)\s+(\d+)$/);
+    const name = m ? m[1].trim() : line;
+    const qty = m ? parseInt(m[2]) : 1;
+    await addDoc(collection(db, 'items'), {
+      name, qty, locationId: bulkLocId, sublocation: bulkSubLoc,
+      dateIn, dateExp: '', barcode: '', notes: '',
+      updatedAt: new Date().toISOString()
+    });
+    count++;
+  }
+  closeModal('modal-bulk');
+  toast(`✅ ${count} item${count!==1?'s':''} added`);
+};
+
+// ── Barcode scanner ────────────────────────────────────────
+window.startScan = async function() {
+  if (!navigator.mediaDevices) { toast('Camera not available — use Chrome browser'); return; }
+  const vid = document.getElementById('scanner-video');
+  document.getElementById('scanner-ui').style.display = 'none';
+  document.getElementById('scanner-active').style.display = 'block';
+  vid.style.display = 'block';
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    vid.srcObject = scanStream;
+    await vid.play();
+    startQuagga(vid);
+  } catch(e) { toast('Camera error: ' + e.message); stopScan(); }
+};
+
+function startQuagga(vid) {
+  if (!window.Quagga) { setTimeout(() => startQuagga(vid), 500); return; }
+  Quagga.init({
+    inputStream:{type:'LiveStream',target:vid,constraints:{facingMode:'environment',width:640,height:480}},
+    decoder:{readers:['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader']},
+    locate:true
+  }, err => {
+    if (!err) { Quagga.start(); scanRunning = true; }
+    else toast('Scanner init failed: ' + err.message);
+  });
+  Quagga.onDetected(async data => {
+    const code = data.codeResult.code;
+    document.getElementById('add-barcode').value = code;
+    stopScan();
+    toast('📦 Barcode: ' + code);
+    await lookupBarcode(code);
+  });
+}
+
+window.stopScan = function() {
+  if (scanRunning) { try { Quagga.stop(); } catch(e){} scanRunning = false; }
+  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  const vid = document.getElementById('scanner-video');
+  vid.srcObject = null; vid.style.display = 'none';
+  document.getElementById('scanner-ui').style.display = 'block';
+  document.getElementById('scanner-active').style.display = 'none';
+};
+
+async function lookupBarcode(code) {
+  try {
+    const r = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
+    const d = await r.json();
+    if (d.status === 1 && d.product) {
+      const n = d.product.product_name || d.product.generic_name || '';
+      if (n && !document.getElementById('add-name').value) {
+        document.getElementById('add-name').value = n;
+        toast('✅ Found: ' + n);
+      }
+      const exp = d.product.expiration_date;
+      if (exp) {
+        const parsed = parseExpiry(exp);
+        if (parsed) document.getElementById('add-date-exp').value = parsed;
+      }
+    }
+  } catch(e) { /* offline or not found — silent */ }
+}
+
+function parseExpiry(s) {
+  if (!s) return null;
+  const m1 = s.match(/(\d{2})\/(\d{4})/); if (m1) return `${m1[2]}-${m1[1]}-01`;
+  const m2 = s.match(/(\d{4})-(\d{2})-(\d{2})/); if (m2) return s;
+  const m3 = s.match(/(\d{2})\.(\d{2})\.(\d{4})/); if (m3) return `${m3[3]}-${m3[2]}-${m3[1]}`;
+  return null;
+}
+
+// ── Voice input ────────────────────────────────────────────
+function renderVoiceLocs() {
+  renderChips('voice-loc-chips', voiceLocId, id => { voiceLocId = id; renderVoiceLocs(); });
+}
+
+window.toggleVoice = function() { isListening ? stopVoice() : startVoice(); };
+
+function startVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('Voice recognition needs Chrome browser'); return; }
+  if (!voiceLocId) { toast('⚠️ Please select a location first'); return; }
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-GB';
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('voice-btn').classList.add('listening');
+    document.getElementById('voice-status').textContent = '🎙 Listening… say item names, or "done" to stop';
+  };
+  recognition.onend = () => { if (isListening) recognition.start(); };
+  recognition.onerror = e => { if (e.error !== 'aborted') toast('Voice error: ' + e.error); };
+  recognition.onresult = e => {
+    let final = '', interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    if (interim) document.getElementById('voice-result').textContent = interim;
+    if (final) {
+      const words = final.trim().toLowerCase();
+      if (['done','finish','finished','stop','end'].includes(words)) { stopVoice(); return; }
+      document.getElementById('voice-result').textContent = final;
+      final.split(/[,\n]|(?:\band\b)/i).map(s=>s.trim()).filter(s=>s.length>1).forEach(addVoiceItem);
+    }
+  };
+  recognition.start();
+}
+
+function stopVoice() {
+  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
+  isListening = false;
+  document.getElementById('voice-btn').classList.remove('listening');
+  document.getElementById('voice-status').textContent = '✅ Stopped — review queue below, then tap Save all';
+}
+
+function addVoiceItem(name) {
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+  voiceQueue.push({
+    id: 'v' + Date.now() + Math.random().toString(36).slice(2,5),
+    name, locationId: voiceLocId,
+    sublocation: document.getElementById('voice-subloc').value.trim(),
+    qty: 1, dateIn: today(), dateExp: '', barcode: '', notes: '',
+    updatedAt: new Date().toISOString()
+  });
+  renderVoiceQueue();
+}
+
+function renderVoiceQueue() {
+  const el = document.getElementById('voice-queue-list');
+  const container = document.getElementById('voice-queue-container');
+  if (!voiceQueue.length) { container.style.display = 'none'; return; }
+  container.style.display = 'block';
+  document.getElementById('voice-queue-title').textContent = `Queue (${voiceQueue.length} item${voiceQueue.length!==1?'s':''} — tap to remove)`;
+  el.innerHTML = voiceQueue.map((item, idx) =>
+    `<div class="item-card" style="cursor:pointer" onclick="removeVoiceItem(${idx})">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="item-name">${escHtml(item.name)}</span>
+        <span style="color:#aaa;font-size:12px">tap to remove ✕</span>
+      </div>
+    </div>`
+  ).join('');
+}
+
+window.removeVoiceItem = function(idx) { voiceQueue.splice(idx, 1); renderVoiceQueue(); };
+
+window.saveVoiceQueue = async function() {
+  if (!voiceQueue.length) { toast('Nothing in queue'); return; }
+  let count = 0;
+  for (const item of voiceQueue) {
+    const {id, ...data} = item;
+    await addDoc(collection(db, 'items'), data);
+    count++;
+  }
+  voiceQueue = [];
+  renderVoiceQueue();
+  document.getElementById('voice-result').textContent = 'Speech will appear here…';
+  toast(`✅ ${count} item${count!==1?'s':''} saved!`);
+};
+
+window.clearVoiceQueue = function() { voiceQueue = []; renderVoiceQueue(); };
+
+// ── Startup ────────────────────────────────────────────────
+const savedConfig = loadConfig();
+if (savedConfig) {
+  initFirebase(savedConfig);
+} else {
+  document.getElementById('config-screen').classList.add('visible');
+}
+document.getElementById('add-date-in').value = today();
+</script>
+
+<!-- Quagga barcode library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+<!-- Service Worker registration (for PWA offline) -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
