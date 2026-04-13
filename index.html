@@ -499,7 +499,6 @@ function toast(msg, dur=2500) {
 }
 
 // ── Modals ─────────────────────────────────────────────────
-window.showModal = function(id) { document.getElementById(id).classList.add('open'); };
 window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
@@ -512,29 +511,45 @@ window.changeQty = function(ctx, delta) {
 };
 
 // ── Location chips renderer ────────────────────────────────
-function renderChips(containerId, selectedId, onSelect) {
+function renderChips(containerId, selectedId, onClickFnName) {
   const el = document.getElementById(containerId);
   if (!el) return;
   el.innerHTML = locations.map(l =>
-    `<span class="loc-chip${selectedId === l.id ? ' selected' : ''}" onclick="(${onSelect.toString()})('${l.id}')">${LOC_ICONS[l.type]||'📦'} ${l.name}</span>`
+    `<span class="loc-chip${selectedId === l.id ? ' selected' : ''}" onclick="${onClickFnName}('${l.id}')">${LOC_ICONS[l.type]||'📦'} ${l.name}</span>`
   ).join('');
 }
 
+window.selectAddLoc = function(id) {
+  addLocId = id;
+  renderChips('add-loc-chips', addLocId, 'selectAddLoc');
+  document.getElementById('add-subloc-row').style.display = 'block';
+};
+
+window.selectDrawerLoc = function(id) {
+  bulkLocId = id;
+  document.getElementById('drawer-controls').style.display = 'block';
+  document.getElementById('drawer-filter').value = '';
+  renderChips('drawer-loc-chips', id, 'selectDrawerLoc');
+  renderDrawerItems(id);
+};
+
+window.selectVoiceLoc = function(id) {
+  voiceLocId = id;
+  renderChips('voice-loc-chips', voiceLocId, 'selectVoiceLoc');
+};
+
+window.selectEditLoc = function(id) {
+  editLocId = id;
+  renderChips('edit-loc-chips', editLocId, 'selectEditLoc');
+};
+
 function refreshAllChips() {
-  renderChips('add-loc-chips', addLocId, id => { addLocId = id; refreshAllChips(); document.getElementById('add-subloc-row').style.display = 'block'; });
+  renderChips('add-loc-chips', addLocId, 'selectAddLoc');
   renderVoiceLocs();
 }
 
 function renderDrawerLocs() {
-  renderChips('drawer-loc-chips', null, id => {
-    bulkLocId = id;
-    document.getElementById('drawer-controls').style.display = 'block';
-    document.getElementById('drawer-filter').value = '';
-    // mark chip selected
-    document.querySelectorAll('#drawer-loc-chips .loc-chip').forEach(c => c.classList.remove('selected'));
-    event.target.closest('.loc-chip').classList.add('selected');
-    renderDrawerItems(id);
-  });
+  renderChips('drawer-loc-chips', bulkLocId, 'selectDrawerLoc');
 }
 
 window.renderDrawerItems = function(locId) {
@@ -666,7 +681,7 @@ window.openEditModal = function(id) {
   document.getElementById('edit-date-in').value = item.dateIn || '';
   document.getElementById('edit-date-exp').value = item.dateExp || '';
   document.getElementById('edit-notes').value = item.notes || '';
-  renderChips('edit-loc-chips', editLocId, id => { editLocId = id; renderChips('edit-loc-chips', editLocId, arguments.callee); });
+  renderChips('edit-loc-chips', editLocId, 'selectEditLoc');
   showModal('modal-edit');
 };
 
@@ -842,7 +857,7 @@ function parseExpiry(s) {
 
 // ── Voice input ────────────────────────────────────────────
 function renderVoiceLocs() {
-  renderChips('voice-loc-chips', voiceLocId, id => { voiceLocId = id; renderVoiceLocs(); });
+  renderChips('voice-loc-chips', voiceLocId, 'selectVoiceLoc');
 }
 
 window.toggleVoice = function() { isListening ? stopVoice() : startVoice(); };
