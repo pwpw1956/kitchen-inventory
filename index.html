@@ -12,180 +12,166 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Kitchen Inventory</title>
 <style>
-/* ── Reset & base ── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;color:#1a1a1a;background:#f0f2f5}
-
-/* ── Layout ── */
-#app{height:100vh;display:flex;flex-direction:column;max-width:640px;margin:0 auto;position:relative}
+#app{height:100vh;display:flex;flex-direction:column;max-width:640px;margin:0 auto}
 .topbar{background:#185FA5;color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,0.15)}
 .topbar h1{font-size:17px;font-weight:600;flex:1}
-.topbar .icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .tab-bar{display:flex;background:#fff;border-bottom:1px solid #e0e0e0;flex-shrink:0}
-.tab{flex:1;padding:10px 2px;text-align:center;font-size:11px;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;font-weight:500}
+.tab{flex:1;padding:9px 2px;text-align:center;font-size:11px;color:#888;cursor:pointer;border-bottom:2px solid transparent;font-weight:500}
 .tab.active{color:#185FA5;border-bottom-color:#185FA5}
-.pages{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.page{display:none;padding:12px}
+.pages{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,20px)}
+.page{display:none;padding:10px}
 .page.active{display:block}
-
-/* ── Cards ── */
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
-.card-title{font-size:11px;font-weight:600;color:#888;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em}
-
-/* ── Form elements ── */
-.field{margin-bottom:12px}
-.field label{display:block;font-size:13px;color:#555;margin-bottom:4px;font-weight:500}
-.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit;-webkit-appearance:none;appearance:none}
+.card{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.card-title{font-size:11px;font-weight:600;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:#555;margin-bottom:3px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit;-webkit-appearance:none;appearance:none}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
-.field textarea{resize:vertical;min-height:60px}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
-
-/* ── Buttons ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all 0.15s}
-.btn:active{transform:scale(0.96)}
+.field textarea{resize:vertical;min-height:56px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.field-row{display:flex;gap:8px}
+.field-row .field{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit}
+.btn:active{opacity:0.75}
 .btn-primary{background:#185FA5;color:#fff}
-.btn-primary:active{background:#0d4a8a}
 .btn-secondary{background:#f0f2f5;color:#1a1a1a;border:1px solid #ddd}
 .btn-danger{background:#c0392b;color:#fff}
 .btn-success{background:#27ae60;color:#fff}
-.btn-warn{background:#e67e22;color:#fff}
-.btn-full{width:100%;margin-bottom:8px}
-.btn-sm{padding:6px 12px;font-size:12px}
-.btn-icon{width:36px;height:36px;border-radius:50%;background:#f0f2f5;border:1px solid #ddd;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-
-/* ── Location chips ── */
-.loc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
-.loc-chip{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:20px;font-size:13px;background:#f0f2f5;border:1px solid #ddd;cursor:pointer;font-weight:500;transition:all 0.15s}
-.loc-chip.selected{background:#e6f1fb;border-color:#185FA5;color:#185FA5}
-
-/* ── Quantity control ── */
-.qty-row{display:flex;align-items:center;gap:12px}
-.qty-btn{width:36px;height:36px;border-radius:50%;background:#f0f2f5;border:1px solid #ddd;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;line-height:1}
-.qty-val{font-size:22px;font-weight:600;min-width:32px;text-align:center;color:#185FA5}
-
-/* ── Item cards ── */
-.item-card{background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.07);position:relative;border-left:3px solid transparent}
-.item-card.freezer-item{border-left-color:#185FA5}
-.item-card.fridge-item{border-left-color:#17a589}
-.item-card.cupboard-item{border-left-color:#8e44ad}
-.item-card.pantry-item{border-left-color:#d35400}
-.item-card.other-item{border-left-color:#7f8c8d}
-.item-name{font-size:15px;font-weight:600;color:#1a1a1a}
-.item-meta{font-size:12px;color:#888;margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
-.badge-blue{background:#e6f1fb;color:#185FA5}
-.badge-teal{background:#d5f5e3;color:#1e8449}
-.badge-purple{background:#f4ecf7;color:#6c3483}
-.badge-amber{background:#fef9e7;color:#9a7d0a}
-.badge-gray{background:#f0f2f5;color:#555}
-.badge-red{background:#fdedec;color:#c0392b}
-.exp-warn{color:#e67e22;font-size:12px;font-weight:500;margin-top:3px}
-.exp-danger{color:#c0392b;font-size:12px;font-weight:500;margin-top:3px}
-
-/* ── Search ── */
-.search-row{display:flex;gap:8px;margin-bottom:10px}
-.search-row input{flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit}
-.search-row select{padding:10px 32px 10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;color:#1a1a1a;font-family:inherit}
-
-/* ── Section headings ── */
-.section-head{font-size:12px;font-weight:600;color:#888;padding:8px 0 6px;border-bottom:1px solid #e8e8e8;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;display:flex;justify-content:space-between;align-items:center}
-
-/* ── Voice ── */
-.voice-btn{width:72px;height:72px;border-radius:50%;background:#185FA5;border:none;color:#fff;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 12px rgba(24,95,165,0.3)}
+.btn-full{width:100%;margin-bottom:6px}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-save-big{width:100%;padding:14px;font-size:17px;font-weight:700;border-radius:10px;margin-top:4px}
+.type-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.type-chip{padding:6px 14px;border-radius:20px;font-size:13px;background:#f0f2f5;border:1px solid #ddd;cursor:pointer;font-weight:500;transition:all 0.15s}
+.slot-select{width:100%;padding:10px 32px 10px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;color:#1a1a1a;font-family:inherit;-webkit-appearance:none;appearance:none}
+.slot-select:focus{outline:none;border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
+.qty-row{display:flex;align-items:center;gap:10px}
+.qty-btn{width:34px;height:34px;border-radius:50%;background:#f0f2f5;border:1px solid #ddd;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300}
+.qty-val{font-size:22px;font-weight:700;min-width:36px;text-align:center;padding:3px 8px;border-radius:8px;background:#e6f1fb;color:#185FA5}
+.qty-val.zero{background:#fde8e8;color:#c0392b}
+.item-card{background:#fff;border-radius:10px;padding:9px 12px;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,0.07);border-left:3px solid #ddd}
+.item-card.t-freezer{border-left-color:#185FA5}
+.item-card.t-fridge{border-left-color:#17a589}
+.item-card.t-cupboard{border-left-color:#8e44ad}
+.item-card.t-other{border-left-color:#7f8c8d}
+.item-name{font-size:14px;font-weight:600;color:#1a1a1a}
+.item-line2{font-size:11px;color:#888;margin-top:2px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-blue{background:#e6f1fb;color:#185FA5}
+.b-teal{background:#d5f5e3;color:#1e8449}
+.b-purple{background:#f4ecf7;color:#6c3483}
+.b-gray{background:#f0f2f5;color:#555}
+.b-pink{background:#fde8e8;color:#c0392b}
+.b-warn{background:#fff3cd;color:#856404}
+.b-qty-ok{background:#e6f1fb;color:#185FA5;font-size:12px;padding:2px 8px;border-radius:10px;font-weight:700}
+.b-qty-zero{background:#fde8e8;color:#c0392b;font-size:12px;padding:2px 8px;border-radius:10px;font-weight:700}
+.search-row{display:flex;gap:8px;margin-bottom:8px}
+.search-row input{flex:1;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit}
+.search-row select{padding:9px 28px 9px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;color:#1a1a1a;font-family:inherit}
+.section-head{font-size:11px;font-weight:700;color:#888;padding:6px 0 5px;border-bottom:1px solid #e8e8e8;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;display:flex;justify-content:space-between;align-items:center}
+.voice-btn{width:68px;height:68px;border-radius:50%;background:#185FA5;border:none;color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 12px rgba(24,95,165,0.3)}
 .voice-btn.listening{background:#c0392b;animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.4)}60%{box-shadow:0 0 0 16px rgba(192,57,43,0)}}
-.voice-result{min-height:52px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:12px;font-size:14px;color:#555;margin:12px 0;line-height:1.5}
-
-/* ── Scanner ── */
-.scanner-box{border:2px dashed #c5d8ef;border-radius:12px;padding:16px;text-align:center;background:#f8fbff;margin-bottom:12px}
-#scanner-video{width:100%;border-radius:8px;max-height:200px;object-fit:cover;display:none}
-
-/* ── Toast ── */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.voice-result{min-height:44px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:10px;font-size:14px;color:#555;margin:10px 0;line-height:1.5}
+.scanner-box{border:2px dashed #c5d8ef;border-radius:12px;padding:14px;text-align:center;background:#f8fbff;margin-bottom:10px}
+#scanner-video{width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:none}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── Modals ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto}
-.modal-title{font-size:17px;font-weight:600;margin-bottom:16px;color:#1a1a1a}
-.modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:14px;color:#1a1a1a}
+.modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-
-/* ── Sync status ── */
 .sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
-.sync-dot.ok{background:#2ecc71}
-.sync-dot.warn{background:#f39c12}
-.sync-dot.err{background:#e74c3c}
-.sync-dot.spin{background:#3498db;animation:spin-pulse 1s ease-in-out infinite}
-@keyframes spin-pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-
-/* ── Empty state ── */
-.empty{text-align:center;padding:48px 20px;color:#aaa}
-.empty-icon{font-size:48px;margin-bottom:12px}
-.empty p{font-size:14px;line-height:1.6}
-
-/* ── Config screen ── */
+.sync-dot.ok{background:#2ecc71}.sync-dot.err{background:#e74c3c}
+.sync-dot.spin{background:#3498db;animation:sp 1s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:1}50%{opacity:0.3}}
+.empty{text-align:center;padding:40px 20px;color:#aaa}
+.empty-icon{font-size:44px;margin-bottom:10px}
 #config-screen{display:none;position:fixed;inset:0;background:#f0f2f5;z-index:1000;overflow-y:auto;padding:24px 16px}
-#config-screen.visible{display:block}
-.config-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.config-card h2{font-size:16px;font-weight:600;margin-bottom:6px;color:#1a1a1a}
-.config-card p{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}
-.config-card code{font-family:monospace;background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:13px;color:#c0392b}
-.step-num{display:inline-flex;width:24px;height:24px;border-radius:50%;background:#185FA5;color:#fff;font-size:12px;font-weight:700;align-items:center;justify-content:center;margin-right:8px;flex-shrink:0}
-.step-row{display:flex;align-items:flex-start;margin-bottom:10px;font-size:13px;color:#444;line-height:1.6}
+.cfg-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.cfg-card h2{font-size:16px;font-weight:600;margin-bottom:6px}
+.cfg-card p{font-size:13px;color:#666;line-height:1.6;margin-bottom:10px}
+.step-num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#185FA5;color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center;margin-right:7px;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;margin-bottom:9px;font-size:13px;color:#444;line-height:1.6}
+.loc-group{margin-bottom:14px}
+.loc-group-title{font-size:12px;font-weight:700;color:#fff;padding:4px 12px;border-radius:6px;margin-bottom:6px;display:inline-block}
+.loc-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f8f9fa;border-radius:8px;margin-bottom:4px}
+.loc-row-name{flex:1;font-size:14px;font-weight:500}
 </style>
 </head>
 <body>
 
-<!-- Firebase config screen (shown until configured) -->
 <div id="config-screen">
   <div style="max-width:500px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:24px">
-      <div style="font-size:48px">❄️</div>
-      <h1 style="font-size:22px;font-weight:700;color:#1a1a1a;margin-top:8px">Kitchen Inventory</h1>
-      <p style="font-size:14px;color:#666;margin-top:6px">One-time Firebase setup needed</p>
+    <div style="text-align:center;margin-bottom:20px">
+      <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="30" fill="#185FA5"/>
+        <line x1="30" y1="6" x2="30" y2="54" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="6" y1="30" x2="54" y2="30" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="12" y1="12" x2="48" y2="48" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        <line x1="48" y1="12" x2="12" y2="48" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        <line x1="30" y1="6" x2="24" y2="15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="30" y1="6" x2="36" y2="15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="30" y1="54" x2="24" y2="45" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="30" y1="54" x2="36" y2="45" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="6" y1="30" x2="15" y2="24" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="6" y1="30" x2="15" y2="36" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="54" y1="30" x2="45" y2="24" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="54" y1="30" x2="45" y2="36" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <h1 style="font-size:22px;font-weight:700;margin-top:10px">Kitchen Inventory</h1>
+      <p style="font-size:14px;color:#666;margin-top:4px">One-time Firebase setup</p>
     </div>
-
-    <div class="config-card">
-      <h2>📋 Step-by-step setup</h2>
-      <p>This takes about 5–10 minutes and only needs to be done once. You'll need a Google account.</p>
-      <div class="step-row"><span class="step-num">1</span><span>Go to <strong>console.firebase.google.com</strong> and sign in with your Google account.</span></div>
-      <div class="step-row"><span class="step-num">2</span><span>Click <strong>"Add project"</strong>, name it <em>kitchen-inventory</em>, disable Google Analytics when asked (not needed), and click <strong>Create project</strong>.</span></div>
-      <div class="step-row"><span class="step-num">3</span><span>In the left sidebar click <strong>Firestore Database</strong>, then <strong>Create database</strong>. Choose <strong>Start in test mode</strong> and pick a server location closest to you (e.g. <em>europe-west2</em> for UK). Click <strong>Enable</strong>.</span></div>
-      <div class="step-row"><span class="step-num">4</span><span>Back on the project overview page, click the <strong>web icon &lt;/&gt;</strong> to add a web app. Give it the nickname <em>kitchen-app</em>. <strong>Do not</strong> enable Firebase Hosting. Click <strong>Register app</strong>.</span></div>
-      <div class="step-row"><span class="step-num">5</span><span>You'll see a block of code with your config. Copy the values for <code>apiKey</code>, <code>authDomain</code>, <code>projectId</code>, and <code>appId</code> into the boxes below.</span></div>
+    <div class="cfg-card">
+      <h2>📋 Setup steps</h2>
+      <div class="step-row"><span class="step-num">1</span><span>Go to <strong>console.firebase.google.com</strong> and sign in with Google.</span></div>
+      <div class="step-row"><span class="step-num">2</span><span>Click <strong>Add project</strong> → name it <em>kitchen-inventory</em> → disable Analytics → <strong>Create project</strong>.</span></div>
+      <div class="step-row"><span class="step-num">3</span><span>In the sidebar click <strong>Firestore</strong> → <strong>Create database</strong> → <strong>Start in test mode</strong> → choose <em>europe-west2</em> → <strong>Enable</strong>.</span></div>
+      <div class="step-row"><span class="step-num">4</span><span>On project overview click the <strong>&lt;/&gt;</strong> web icon → nickname <em>kitchen-app</em> → <strong>Register app</strong>.</span></div>
+      <div class="step-row"><span class="step-num">5</span><span>Copy the four values from the config block into the boxes below.</span></div>
     </div>
-
-    <div class="config-card">
-      <h2>🔑 Your Firebase credentials</h2>
-      <p>Paste the values from the Firebase console here. These are stored only on your device.</p>
-      <div class="field"><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIzaSy..."></div>
+    <div class="cfg-card">
+      <h2>🔑 Firebase credentials</h2>
+      <div class="field"><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIzaSy…"></div>
       <div class="field"><label>Auth Domain</label><input type="text" id="cfg-authDomain" placeholder="your-project.firebaseapp.com"></div>
       <div class="field"><label>Project ID</label><input type="text" id="cfg-projectId" placeholder="kitchen-inventory-xxxxx"></div>
       <div class="field"><label>App ID</label><input type="text" id="cfg-appId" placeholder="1:123456:web:abcdef"></div>
-      <button class="btn btn-primary btn-full" onclick="saveFirebaseConfig()" style="margin-top:8px;font-size:16px;padding:14px">Connect to Firebase →</button>
+      <button class="btn btn-primary btn-full" onclick="saveFirebaseConfig()" style="margin-top:8px;padding:14px;font-size:16px">Connect to Firebase →</button>
       <p id="cfg-error" style="color:#c0392b;font-size:13px;margin-top:8px;display:none"></p>
     </div>
-
-    <div class="config-card">
-      <h2>📱 Installing on your phone</h2>
-      <div class="step-row"><span class="step-num">1</span><span>Open this file in <strong>Chrome</strong> on your phone (not Samsung Browser).</span></div>
-      <div class="step-row"><span class="step-num">2</span><span>Tap the <strong>three-dot menu</strong> (⋮) in Chrome, then tap <strong>"Add to Home screen"</strong>.</span></div>
-      <div class="step-row"><span class="step-num">3</span><span>Tap <strong>Add</strong>. The app icon will appear on your home screen like a regular app.</span></div>
-      <div class="step-row"><span class="step-num">4</span><span>Do the same on your wife's phone — both phones will then share the same data automatically.</span></div>
+    <div class="cfg-card">
+      <h2>📱 Install on phone</h2>
+      <div class="step-row"><span class="step-num">1</span><span>Open this URL in <strong>Chrome</strong> (not Samsung Browser).</span></div>
+      <div class="step-row"><span class="step-num">2</span><span>Tap <strong>⋮ → Add to Home screen → Add</strong>.</span></div>
+      <div class="step-row"><span class="step-num">3</span><span>Repeat on your wife's phone — both share the same data automatically.</span></div>
     </div>
   </div>
 </div>
 
-<!-- Main app -->
 <div id="app" style="display:none">
   <div class="topbar">
-    <span style="font-size:22px">❄️</span>
+    <svg width="26" height="26" viewBox="0 0 60 60">
+      <circle cx="30" cy="30" r="30" fill="rgba(255,255,255,0.2)"/>
+      <line x1="30" y1="6" x2="30" y2="54" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+      <line x1="6" y1="30" x2="54" y2="30" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+      <line x1="12" y1="12" x2="48" y2="48" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="48" y1="12" x2="12" y2="48" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <line x1="30" y1="6" x2="24" y2="15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="30" y1="6" x2="36" y2="15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="30" y1="54" x2="24" y2="45" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="30" y1="54" x2="36" y2="45" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="6" y1="30" x2="15" y2="24" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="6" y1="30" x2="15" y2="36" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="54" y1="30" x2="45" y2="24" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="54" y1="30" x2="45" y2="36" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
     <h1>Kitchen Inventory</h1>
-    <span id="sync-indicator" title="Sync status" style="font-size:12px;display:flex;align-items:center;gap:4px;opacity:0.85"><span class="sync-dot spin" id="sync-dot"></span><span id="sync-text">Connecting</span></span>
-    <button class="icon-btn" onclick="showModal('modal-locations')" title="Manage locations" style="font-size:16px">⚙️</button>
+    <span id="sync-indicator" style="font-size:11px;display:flex;align-items:center;gap:3px;opacity:0.85"><span class="sync-dot spin" id="sync-dot"></span><span id="sync-text">…</span></span>
+    <button class="icon-btn" onclick="showModal('modal-locations')">⚙️</button>
   </div>
 
   <div class="tab-bar">
@@ -200,27 +186,30 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- ADD TAB -->
     <div class="page active" id="page-add">
       <div class="card">
-        <div class="card-title">Scan barcode or enter manually</div>
-        <div class="scanner-box" id="scanner-box">
+        <div class="card-title">Scan or enter item</div>
+        <div class="scanner-box">
           <video id="scanner-video" playsinline muted autoplay></video>
           <div id="scanner-ui">
-            <div style="font-size:36px;margin-bottom:8px">📷</div>
-            <p style="font-size:13px;color:#888;margin-bottom:12px">Scan a barcode to auto-fill product details</p>
-            <button class="btn btn-primary" onclick="startScan()" id="btn-scan-start">Scan barcode</button>
+            <div style="font-size:32px;margin-bottom:6px">📷</div>
+            <p style="font-size:12px;color:#888;margin-bottom:10px">Scan barcode to auto-fill details</p>
+            <button class="btn btn-primary" onclick="startScan()">Scan barcode</button>
           </div>
           <div id="scanner-active" style="display:none;margin-top:8px">
             <button class="btn btn-secondary" onclick="stopScan()">✕ Stop scanning</button>
           </div>
         </div>
-        <div class="field"><label>Item name / description *</label><input type="text" id="add-name" placeholder="e.g. Peas, Leftover lasagne, Chicken breast…" autocomplete="off"></div>
+        <div class="field"><label>Item name *</label><input type="text" id="add-name" placeholder="e.g. Peas, Leftover lasagne, Chicken breast…" autocomplete="off"></div>
         <div class="field"><label>Barcode (auto-filled or leave blank)</label><input type="text" id="add-barcode" placeholder="Optional" inputmode="numeric"></div>
       </div>
 
       <div class="card">
-        <div class="card-title">Location *</div>
-        <div class="loc-chips" id="add-loc-chips"></div>
-        <div id="add-subloc-row" style="display:none;margin-top:8px">
-          <div class="field"><label>Drawer / shelf / section</label><input type="text" id="add-subloc" placeholder="e.g. Top drawer, Middle shelf, Door…"></div>
+        <div class="card-title">Location *  — first choose type, then drawer/shelf</div>
+        <div class="type-chips" id="add-type-chips"></div>
+        <div id="add-slot-row" style="display:none;margin-top:4px">
+          <label style="font-size:12px;color:#555;font-weight:500;display:block;margin-bottom:4px">Drawer / shelf</label>
+          <select class="slot-select" id="add-slot-select" onchange="addSlotChanged()">
+            <option value="">— choose —</option>
+          </select>
         </div>
       </div>
 
@@ -232,29 +221,33 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             <button class="qty-btn" onclick="changeQty('add',-1)">−</button>
             <span class="qty-val" id="add-qty">1</span>
             <button class="qty-btn" onclick="changeQty('add',1)">+</button>
-            <span style="font-size:13px;color:#888;margin-left:4px">portion(s) / pack(s)</span>
+            <span style="font-size:12px;color:#888;margin-left:6px">portion(s) / pack(s)</span>
           </div>
         </div>
-        <div class="field"><label>Date added</label><input type="date" id="add-date-in"></div>
-        <div class="field"><label>Use by / best before (optional)</label><input type="date" id="add-date-exp"></div>
+        <div class="field-row">
+          <div class="field"><label>Date added</label><input type="date" id="add-date-in"></div>
+          <div class="field"><label>Use by (optional)</label><input type="date" id="add-date-exp"></div>
+        </div>
         <div class="field"><label>Notes (optional)</label><textarea id="add-notes" placeholder="Any extra info…"></textarea></div>
       </div>
 
-      <button class="btn btn-primary btn-full" style="font-size:16px;padding:14px" onclick="saveNewItem()">✓ Save item</button>
-      <div style="height:20px"></div>
+      <button class="btn btn-primary btn-save-big" onclick="saveNewItem()">✓ Save item</button>
+      <div style="height:10px"></div>
     </div>
 
     <!-- LOCATION TAB -->
     <div class="page" id="page-drawer">
       <div class="card">
-        <div class="card-title">Choose location</div>
-        <div class="loc-chips" id="drawer-loc-chips"></div>
+        <div class="card-title">Choose location type</div>
+        <div class="type-chips" id="drawer-type-chips"></div>
       </div>
-      <div id="drawer-controls" style="display:none">
-        <div class="card">
-          <div class="card-title">Filter &amp; actions</div>
-          <div class="field"><label>Filter by drawer / shelf</label><input type="text" id="drawer-filter" placeholder="e.g. Bottom drawer, Top shelf…" oninput="renderDrawerItems()"></div>
-          <button class="btn btn-primary" onclick="openBulkModal()">＋ Bulk add items here</button>
+      <div id="drawer-slot-card" style="display:none" class="card">
+        <div class="card-title">Choose drawer / shelf</div>
+        <select class="slot-select" id="drawer-slot-select" onchange="drawerSlotChanged()">
+          <option value="">— choose —</option>
+        </select>
+        <div style="margin-top:10px">
+          <button class="btn btn-primary btn-sm" onclick="openBulkModal()">＋ Bulk add items here</button>
         </div>
       </div>
       <div id="drawer-items"></div>
@@ -278,33 +271,32 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="page" id="page-voice">
       <div class="card" style="text-align:center">
         <div class="card-title">Voice input</div>
-        <p style="font-size:13px;color:#666;margin-bottom:12px">Pick a location, then tap the microphone and say items out loud. Say <strong>"done"</strong> to stop. Items go into a queue so you can review before saving.</p>
-        <div class="loc-chips" id="voice-loc-chips" style="justify-content:center;margin-bottom:12px"></div>
-        <div class="field"><label>Drawer / shelf (optional)</label><input type="text" id="voice-subloc" placeholder="e.g. Bottom drawer"></div>
+        <p style="font-size:13px;color:#666;margin-bottom:10px">Pick a location, tap the mic and speak. Say <strong>"done"</strong> to stop.</p>
+        <div class="type-chips" id="voice-type-chips" style="justify-content:center;margin-bottom:8px"></div>
+        <div id="voice-slot-row" style="display:none;margin-bottom:10px">
+          <select class="slot-select" id="voice-slot-select"></select>
+        </div>
         <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">🎙</button>
-        <p id="voice-status" style="font-size:13px;color:#888;margin:10px 0 0">Tap to start listening</p>
+        <p id="voice-status" style="font-size:13px;color:#888;margin:8px 0 0">Tap to start listening</p>
         <div class="voice-result" id="voice-result">Speech will appear here…</div>
       </div>
-
       <div id="voice-queue-container" style="display:none">
         <div class="section-head">
           <span id="voice-queue-title">Queue</span>
-          <div style="display:flex;gap:8px">
+          <div style="display:flex;gap:6px">
             <button class="btn btn-success btn-sm" onclick="saveVoiceQueue()">✓ Save all</button>
             <button class="btn btn-secondary btn-sm" onclick="clearVoiceQueue()">Clear</button>
           </div>
         </div>
         <div id="voice-queue-list"></div>
       </div>
-
-      <div class="card" style="background:#f8fbff;border:1px solid #d4e8f7">
-        <div class="card-title">💡 Tips</div>
-        <p style="font-size:13px;color:#555;line-height:1.6">Speak item names clearly and naturally: <em>"chicken breasts"</em>, <em>"leftover soup"</em>, <em>"fish fingers"</em>. Separate multiple items with a short pause or say <em>"and"</em>. Say <strong>"done"</strong> or <strong>"finish"</strong> to stop. Works best in Chrome on Android.</p>
+      <div class="card" style="background:#f8fbff;border:1px solid #d4e8f7;margin-top:8px">
+        <p style="font-size:13px;color:#555;line-height:1.6">Speak naturally. Separate items with a pause or "and". Say <strong>"done"</strong> to stop. Works best in Chrome.</p>
       </div>
     </div>
 
-  </div><!-- /pages -->
-</div><!-- /app -->
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -313,21 +305,44 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Manage locations</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">Add containers (Garage Freezer, Fridge, etc.) and their drawers/shelves. Use a number prefix like <em>GF1 –</em> to control order.</p>
     <div id="loc-manage-list"></div>
     <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
-    <p style="font-size:13px;color:#666;margin-bottom:10px;font-weight:500">Add new location</p>
-    <div style="display:flex;gap:8px">
-      <input type="text" id="new-loc-name" placeholder="Name (e.g. Chest Freezer)" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px">
-      <select id="new-loc-type" style="padding:10px 28px 10px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22%3E%3Cpath d=%22M1 1l5 5 5-5%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 8px center;-webkit-appearance:none">
-        <option value="freezer">Freezer</option>
-        <option value="fridge">Fridge</option>
-        <option value="cupboard">Cupboard</option>
-        <option value="pantry">Pantry</option>
-        <option value="other">Other</option>
+    <p style="font-size:13px;font-weight:600;margin-bottom:10px">Add a drawer / shelf</p>
+    <div class="field"><label>Container</label>
+      <select id="new-loc-container" class="slot-select">
+        <option value="">— select existing container —</option>
       </select>
     </div>
-    <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="addLocation()">Add location</button>
-    <button class="btn btn-secondary btn-full" onclick="closeModal('modal-locations')">Close</button>
+    <div class="field"><label>— or create a new container —</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="new-container-name" placeholder="e.g. Garage Freezer" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit">
+        <select id="new-container-type" style="padding:8px 28px 8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22%3E%3Cpath d=%22M1 1l5 5 5-5%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 8px center;-webkit-appearance:none;font-family:inherit">
+          <option value="freezer">Freezer</option>
+          <option value="fridge">Fridge</option>
+          <option value="cupboard">Cupboard</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Drawer / shelf name *</label><input type="text" id="new-slot-name" placeholder="e.g. GF1 – Quick Freeze, Top shelf…" style="padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit;width:100%"></div>
+    <button class="btn btn-primary btn-full" onclick="addSlot()">＋ Add drawer / shelf</button>
+    <button class="btn btn-secondary btn-full" onclick="closeModal('modal-locations')">Done</button>
+  </div>
+</div>
+
+<!-- EDIT SLOT MODAL -->
+<div class="modal-overlay" id="modal-edit-slot">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit drawer / shelf</div>
+    <div class="field"><label>Name</label><input type="text" id="edit-slot-name" style="padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit;width:100%"></div>
+    <div class="field"><label>Container</label><select id="edit-slot-container" class="slot-select"></select></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveSlotEdit()">✓ Save</button>
+      <button class="btn btn-danger" onclick="deleteSlot()">🗑 Delete</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit-slot')">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -336,9 +351,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Edit item</div>
-    <div class="field"><label>Name *</label><input type="text" id="edit-name"></div>
-    <div class="field"><label>Location</label><div class="loc-chips" id="edit-loc-chips"></div></div>
-    <div class="field"><label>Drawer / shelf</label><input type="text" id="edit-subloc"></div>
+    <div class="field"><label>Name *</label><input type="text" id="edit-name" style="padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit;width:100%"></div>
+    <div class="field"><label>Location type</label><div class="type-chips" id="edit-type-chips"></div></div>
+    <div class="field"><label>Drawer / shelf</label><select class="slot-select" id="edit-slot-select"></select></div>
     <div class="field">
       <label>Quantity</label>
       <div class="qty-row">
@@ -347,11 +362,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <button class="qty-btn" onclick="changeQty('edit',1)">+</button>
       </div>
     </div>
-    <div class="field"><label>Date added</label><input type="date" id="edit-date-in"></div>
-    <div class="field"><label>Use by / best before</label><input type="date" id="edit-date-exp"></div>
+    <div class="field-row">
+      <div class="field"><label>Date added</label><input type="date" id="edit-date-in"></div>
+      <div class="field"><label>Use by</label><input type="date" id="edit-date-exp"></div>
+    </div>
     <div class="field"><label>Notes</label><textarea id="edit-notes"></textarea></div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="saveEdit()">✓ Save changes</button>
+      <button class="btn btn-primary" onclick="saveEdit()">✓ Save</button>
       <button class="btn btn-danger" onclick="deleteItem()">🗑 Delete</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-edit')">Cancel</button>
     </div>
@@ -362,611 +379,483 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <div class="modal-overlay" id="modal-bulk">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">Bulk add items</div>
-    <p style="font-size:13px;color:#666;margin-bottom:12px">One item per line. Add a number at the end for quantity, e.g. <em>Chicken breast x3</em> or <em>Fish fingers 6</em></p>
-    <div class="field">
-      <textarea id="bulk-text" style="min-height:160px" placeholder="Peas&#10;Chicken breast x3&#10;Leftover tomato soup&#10;Fish fingers x6&#10;Sausages 8"></textarea>
-    </div>
-    <div class="field"><label>Date added (optional)</label><input type="date" id="bulk-date-in"></div>
+    <div class="modal-title">Bulk add to <span id="bulk-loc-name" style="color:#185FA5"></span></div>
+    <p style="font-size:13px;color:#666;margin-bottom:10px">One item per line. Add quantity at end: <em>Chicken breast x3</em></p>
+    <textarea id="bulk-text" style="width:100%;min-height:140px;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit" placeholder="Peas&#10;Chicken breast x3&#10;Leftover soup&#10;Fish fingers x6"></textarea>
+    <div class="field" style="margin-top:10px"><label>Date added</label><input type="date" id="bulk-date-in"></div>
     <div class="btn-row">
-      <button class="btn btn-success" onclick="saveBulk()">✓ Add all items</button>
+      <button class="btn btn-success" onclick="saveBulk()">✓ Add all</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-bulk')">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 // ── State ──────────────────────────────────────────────────
 let db = null;
-let fbApp = null;
-let unsubItems = null, unsubLocs = null;
-let locations = [];
+let containers = [];  // {id, name, type}
+let slots = [];       // {id, name, containerId, sortOrder}
 let items = [];
-let currentTab = 'add';
 
 let addQtyVal = 1, editQtyVal = 1;
-let addLocId = null, editLocId = null, voiceLocId = null;
-let editingItemId = null;
-let bulkLocId = null, bulkSubLoc = null;
-let voiceQueue = [];
-let recognition = null, isListening = false;
+let addTypeId = null, editTypeId = null, voiceTypeId = null, drawerTypeId = null;
+let addSlotId = null, editSlotId = null, voiceSlotId = null, drawerSlotId = null;
+let editingItemId = null, editingSlotId = null, bulkSlotId = null;
+let voiceQueue = [], recognition = null, isListening = false;
 let scanStream = null, scanRunning = false;
 
-const LOC_ICONS = {freezer:'❄️',fridge:'🧊',cupboard:'🗄️',pantry:'🥫',other:'📦'};
-const LOC_COLORS = {freezer:'badge-blue',fridge:'badge-teal',cupboard:'badge-purple',pantry:'badge-amber',other:'badge-gray'};
-const ITEM_BORDER = {freezer:'freezer-item',fridge:'fridge-item',cupboard:'cupboard-item',pantry:'pantry-item',other:'other-item'};
+const EXP_WARN = {freezer:7, fridge:3, cupboard:14, other:7};
+const TYPE_COLORS = {freezer:'#185FA5', fridge:'#17a589', cupboard:'#8e44ad', other:'#7f8c8d'};
+const TYPE_ICONS  = {freezer:'❄️', fridge:'🧊', cupboard:'🗄️', other:'📦'};
+const TYPE_LABELS = {freezer:'Freezer', fridge:'Fridge', cupboard:'Cupboard', other:'Other'};
+const CARD_CLASS  = {freezer:'t-freezer', fridge:'t-fridge', cupboard:'t-cupboard', other:'t-other'};
+const BADGE_CLASS = {freezer:'b-blue', fridge:'b-teal', cupboard:'b-purple', other:'b-gray'};
 
-// ── Firebase config ────────────────────────────────────────
-function loadConfig() {
-  try { return JSON.parse(localStorage.getItem('fb_config') || 'null'); } catch(e) { return null; }
-}
+// ── Firebase ───────────────────────────────────────────────
+function loadConfig(){try{return JSON.parse(localStorage.getItem('fb_config')||'null');}catch(e){return null;}}
 
-window.saveFirebaseConfig = function() {
-  const cfg = {
-    apiKey: document.getElementById('cfg-apiKey').value.trim(),
-    authDomain: document.getElementById('cfg-authDomain').value.trim(),
-    projectId: document.getElementById('cfg-projectId').value.trim(),
-    appId: document.getElementById('cfg-appId').value.trim(),
-    storageBucket: '',
-    messagingSenderId: ''
-  };
-  if (!cfg.apiKey || !cfg.projectId) {
-    document.getElementById('cfg-error').textContent = 'Please fill in at least the API Key and Project ID.';
-    document.getElementById('cfg-error').style.display = 'block';
-    return;
-  }
-  localStorage.setItem('fb_config', JSON.stringify(cfg));
+window.saveFirebaseConfig = function(){
+  const cfg={apiKey:v('cfg-apiKey'),authDomain:v('cfg-authDomain'),projectId:v('cfg-projectId'),appId:v('cfg-appId'),storageBucket:'',messagingSenderId:''};
+  if(!cfg.apiKey||!cfg.projectId){showCfgErr('Please fill in API Key and Project ID.');return;}
+  localStorage.setItem('fb_config',JSON.stringify(cfg));
   initFirebase(cfg);
 };
 
-async function initFirebase(cfg) {
-  try {
-    fbApp = initializeApp(cfg);
-    db = getFirestore(fbApp);
-    document.getElementById('config-screen').classList.remove('visible');
-    document.getElementById('config-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    startListeners();
-    setSyncStatus('spin', 'Connecting…');
-  } catch(e) {
-    document.getElementById('cfg-error').textContent = 'Connection failed: ' + e.message;
-    document.getElementById('cfg-error').style.display = 'block';
-    localStorage.removeItem('fb_config');
-  }
+function showCfgErr(msg){const el=document.getElementById('cfg-error');el.textContent=msg;el.style.display='block';}
+
+async function initFirebase(cfg){
+  try{
+    const app=initializeApp(cfg);db=getFirestore(app);
+    document.getElementById('config-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    startListeners();setSyncStatus('spin','Connecting…');
+  }catch(e){showCfgErr('Connection failed: '+e.message);localStorage.removeItem('fb_config');}
 }
 
-// ── Firestore listeners ────────────────────────────────────
-function startListeners() {
-  const locQ = query(collection(db, 'locations'), orderBy('name'));
-  unsubLocs = onSnapshot(locQ, snap => {
-    locations = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    if (locations.length === 0) seedDefaultLocations();
-    refreshAllChips();
-    renderDrawerLocs();
-    renderDrawerItems();
-    renderBrowse();
-    setSyncStatus('ok', 'Synced');
-  }, err => { setSyncStatus('err', 'Offline'); });
+function startListeners(){
+  onSnapshot(query(collection(db,'containers'),orderBy('name')),snap=>{
+    containers=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!containers.length)seedDefaults();
+    refreshTypeChips();refreshContainerDropdowns();setSyncStatus('ok','Synced');
+  },()=>setSyncStatus('err','Offline'));
 
-  const itemQ = query(collection(db, 'items'), orderBy('name'));
-  unsubItems = onSnapshot(itemQ, snap => {
-    items = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    renderDrawerItems();
-    renderBrowse();
-    setSyncStatus('ok', 'Synced');
-  }, err => { setSyncStatus('err', 'Offline'); });
+  onSnapshot(query(collection(db,'slots'),orderBy('sortOrder'),orderBy('name')),snap=>{
+    slots=snap.docs.map(d=>({id:d.id,...d.data()}));
+    refreshSlotDropdowns();
+  });
+
+  onSnapshot(query(collection(db,'items'),orderBy('name')),snap=>{
+    items=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDrawerItems();renderBrowse();setSyncStatus('ok','Synced');
+  },()=>setSyncStatus('err','Offline'));
 }
 
-async function seedDefaultLocations() {
-  const defaults = [
-    {name:'Main Freezer', type:'freezer'},
-    {name:'Fridge', type:'fridge'},
-    {name:'Pantry', type:'pantry'}
+async function seedDefaults(){
+  const gc=await addDoc(collection(db,'containers'),{name:'Garage Freezer',type:'freezer'});
+  const kc=await addDoc(collection(db,'containers'),{name:'Kitchen Freezer',type:'freezer'});
+  const fc=await addDoc(collection(db,'containers'),{name:'Fridge',type:'fridge'});
+  const pc=await addDoc(collection(db,'containers'),{name:'Cupboards',type:'cupboard'});
+  const seeds=[
+    {name:'GF1 – Quick Freeze',containerId:gc.id,sortOrder:1},{name:'GF2 – Meat',containerId:gc.id,sortOrder:2},{name:'GF3 – Veg & Fish',containerId:gc.id,sortOrder:3},{name:'GF4 – Bottom',containerId:gc.id,sortOrder:4},
+    {name:'KF1 – Top',containerId:kc.id,sortOrder:1},{name:'KF2 – Middle',containerId:kc.id,sortOrder:2},{name:'KF3 – Bottom',containerId:kc.id,sortOrder:3},
+    {name:'Top shelf',containerId:fc.id,sortOrder:1},{name:'Middle shelf',containerId:fc.id,sortOrder:2},{name:'Bottom shelf',containerId:fc.id,sortOrder:3},{name:'Door',containerId:fc.id,sortOrder:4},{name:'Salad drawer',containerId:fc.id,sortOrder:5},
+    {name:'Shelf 1',containerId:pc.id,sortOrder:1},{name:'Shelf 2',containerId:pc.id,sortOrder:2},{name:'Shelf 3',containerId:pc.id,sortOrder:3},
   ];
-  for (const l of defaults) {
-    await addDoc(collection(db, 'locations'), l);
-  }
+  for(const s of seeds)await addDoc(collection(db,'slots'),s);
 }
 
-// ── Sync indicator ─────────────────────────────────────────
-function setSyncStatus(state, text) {
-  const dot = document.getElementById('sync-dot');
-  dot.className = 'sync-dot ' + state;
-  document.getElementById('sync-text').textContent = text;
+// ── Sync ───────────────────────────────────────────────────
+function setSyncStatus(state,text){
+  document.getElementById('sync-dot').className='sync-dot '+state;
+  document.getElementById('sync-text').textContent=text;
 }
+
+// ── Helpers ────────────────────────────────────────────────
+function v(id){return(document.getElementById(id)?.value||'').trim();}
+function today(){return new Date().toISOString().slice(0,10);}
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function toast(msg,dur=2500){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+window.showModal=function(id){if(id==='modal-locations')renderLocManage();document.getElementById(id).classList.add('open');};
+window.closeModal=function(id){document.getElementById(id).classList.remove('open');};
+document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});});
 
 // ── Tabs ───────────────────────────────────────────────────
-window.switchTab = function(tab) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-  currentTab = tab;
-  if (tab === 'drawer') { renderDrawerLocs(); renderDrawerItems(); }
-  if (tab === 'browse') renderBrowse();
-  if (tab === 'voice') renderVoiceLocs();
+window.switchTab=function(tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='browse')renderBrowse();
+  if(tab==='drawer')renderDrawerItems();
 };
 
-// ── Toast ──────────────────────────────────────────────────
-function toast(msg, dur=2500) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), dur);
+// ── Qty ────────────────────────────────────────────────────
+window.changeQty=function(ctx,d){
+  if(ctx==='add'){addQtyVal=Math.max(0,addQtyVal+d);const el=document.getElementById('add-qty');el.textContent=addQtyVal;el.className='qty-val'+(addQtyVal===0?' zero':'');}
+  else{editQtyVal=Math.max(0,editQtyVal+d);const el=document.getElementById('edit-qty');el.textContent=editQtyVal;el.className='qty-val'+(editQtyVal===0?' zero':'');}
+};
+
+// ── Type chips ─────────────────────────────────────────────
+function renderTypeChips(containerId,selectedTypeId,onClickFn){
+  const el=document.getElementById(containerId);if(!el)return;
+  const types=[...new Set(containers.map(c=>c.type))];
+  el.innerHTML=types.map(type=>{
+    const sel=selectedTypeId===type;
+    const col=TYPE_COLORS[type]||'#888';
+    return `<span class="type-chip" style="${sel?'background:'+col+';border-color:'+col+';color:#fff':''}" onclick="${onClickFn}('${type}')">${TYPE_ICONS[type]||'📦'} ${TYPE_LABELS[type]||type}</span>`;
+  }).join('');
 }
 
-// ── Modals ─────────────────────────────────────────────────
-window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-});
-
-// ── Qty controls ───────────────────────────────────────────
-window.changeQty = function(ctx, delta) {
-  if (ctx === 'add') { addQtyVal = Math.max(1, addQtyVal + delta); document.getElementById('add-qty').textContent = addQtyVal; }
-  else { editQtyVal = Math.max(1, editQtyVal + delta); document.getElementById('edit-qty').textContent = editQtyVal; }
-};
-
-// ── Location chips renderer ────────────────────────────────
-function renderChips(containerId, selectedId, onClickFnName) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.innerHTML = locations.map(l =>
-    `<span class="loc-chip${selectedId === l.id ? ' selected' : ''}" onclick="${onClickFnName}('${l.id}')">${LOC_ICONS[l.type]||'📦'} ${l.name}</span>`
-  ).join('');
+function refreshTypeChips(){
+  renderTypeChips('add-type-chips',addTypeId,'selectAddType');
+  renderTypeChips('drawer-type-chips',drawerTypeId,'selectDrawerType');
+  renderTypeChips('voice-type-chips',voiceTypeId,'selectVoiceType');
+  renderTypeChips('edit-type-chips',editTypeId,'selectEditType');
 }
 
-window.selectAddLoc = function(id) {
-  addLocId = id;
-  renderChips('add-loc-chips', addLocId, 'selectAddLoc');
-  document.getElementById('add-subloc-row').style.display = 'block';
-};
-
-window.selectDrawerLoc = function(id) {
-  bulkLocId = id;
-  document.getElementById('drawer-controls').style.display = 'block';
-  document.getElementById('drawer-filter').value = '';
-  renderChips('drawer-loc-chips', id, 'selectDrawerLoc');
-  renderDrawerItems(id);
-};
-
-window.selectVoiceLoc = function(id) {
-  voiceLocId = id;
-  renderChips('voice-loc-chips', voiceLocId, 'selectVoiceLoc');
-};
-
-window.selectEditLoc = function(id) {
-  editLocId = id;
-  renderChips('edit-loc-chips', editLocId, 'selectEditLoc');
-};
-
-function refreshAllChips() {
-  renderChips('add-loc-chips', addLocId, 'selectAddLoc');
-  renderVoiceLocs();
+// ── Slot dropdowns ─────────────────────────────────────────
+function populateSlotSelect(selectId,typeId,selectedSlotId){
+  const el=document.getElementById(selectId);if(!el)return;
+  const cids=containers.filter(c=>c.type===typeId).map(c=>c.id);
+  const relevant=slots.filter(s=>cids.includes(s.containerId));
+  el.innerHTML='<option value="">— choose —</option>';
+  const grouped={};
+  relevant.forEach(s=>{const cn=containers.find(c=>c.id===s.containerId)?.name||'';(grouped[cn]=grouped[cn]||[]).push(s);});
+  Object.entries(grouped).forEach(([cn,slist])=>{
+    const grp=document.createElement('optgroup');grp.label=cn;
+    slist.forEach(s=>{const opt=document.createElement('option');opt.value=s.id;opt.textContent=s.name;if(s.id===selectedSlotId)opt.selected=true;grp.appendChild(opt);});
+    el.appendChild(grp);
+  });
 }
 
-function renderDrawerLocs() {
-  renderChips('drawer-loc-chips', bulkLocId, 'selectDrawerLoc');
+function refreshSlotDropdowns(){
+  if(addTypeId)populateSlotSelect('add-slot-select',addTypeId,addSlotId);
+  if(drawerTypeId)populateSlotSelect('drawer-slot-select',drawerTypeId,drawerSlotId);
+  if(voiceTypeId)populateSlotSelect('voice-slot-select',voiceTypeId,voiceSlotId);
+  if(editTypeId)populateSlotSelect('edit-slot-select',editTypeId,editSlotId);
 }
 
-window.renderDrawerItems = function(locId) {
-  const activeLoc = locId || bulkLocId;
-  const el = document.getElementById('drawer-items');
-  if (!activeLoc) { el.innerHTML = ''; return; }
-  const filter = (document.getElementById('drawer-filter')?.value || '').toLowerCase();
-  let list = items.filter(i => i.locationId === activeLoc);
-  if (filter) list = list.filter(i => (i.name + ' ' + (i.sublocation||'')).toLowerCase().includes(filter));
-  if (!list.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>No items here yet.<br>Tap <strong>Bulk add</strong> to fill this location.</p></div>`;
-    return;
-  }
-  const groups = {};
-  list.forEach(i => { const k = i.sublocation || '(no drawer/shelf specified)'; (groups[k] = groups[k]||[]).push(i); });
-  el.innerHTML = Object.entries(groups).map(([g, arr]) =>
-    `<div class="section-head"><span>${g} <span style="font-weight:400;color:#aaa">(${arr.length})</span></span></div>` +
-    arr.map(i => itemCardHTML(i)).join('')
-  ).join('');
+function refreshContainerDropdowns(){
+  const sel=document.getElementById('new-loc-container');
+  if(sel){sel.innerHTML='<option value="">— select existing container —</option>';containers.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=`${TYPE_ICONS[c.type]} ${c.name}`;sel.appendChild(o);});}
+  const esel=document.getElementById('edit-slot-container');
+  if(esel){esel.innerHTML='';containers.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=`${TYPE_ICONS[c.type]} ${c.name}`;esel.appendChild(o);});}
+}
+
+// ── Type selection ─────────────────────────────────────────
+window.selectAddType=function(type){addTypeId=type;addSlotId=null;refreshTypeChips();populateSlotSelect('add-slot-select',type,null);document.getElementById('add-slot-row').style.display='block';document.getElementById('add-slot-select').value='';};
+window.addSlotChanged=function(){addSlotId=document.getElementById('add-slot-select').value||null;};
+window.selectDrawerType=function(type){drawerTypeId=type;drawerSlotId=null;renderTypeChips('drawer-type-chips',type,'selectDrawerType');populateSlotSelect('drawer-slot-select',type,null);document.getElementById('drawer-slot-card').style.display='block';document.getElementById('drawer-items').innerHTML='';};
+window.drawerSlotChanged=function(){drawerSlotId=document.getElementById('drawer-slot-select').value||null;renderDrawerItems();};
+window.selectVoiceType=function(type){voiceTypeId=type;voiceSlotId=null;renderTypeChips('voice-type-chips',type,'selectVoiceType');populateSlotSelect('voice-slot-select',type,null);document.getElementById('voice-slot-row').style.display='block';};
+window.selectEditType=function(type){editTypeId=type;renderTypeChips('edit-type-chips',type,'selectEditType');populateSlotSelect('edit-slot-select',type,null);};
+
+// ── Item card HTML ─────────────────────────────────────────
+function slotInfo(slotId){
+  const slot=slots.find(s=>s.id===slotId);if(!slot)return{slotName:'',container:null};
+  return{slotName:slot.name,container:containers.find(c=>c.id===slot.containerId)||null};
+}
+
+function expiryInfo(dateStr,ctype){
+  if(!dateStr)return null;
+  const now=new Date();now.setHours(0,0,0,0);
+  const exp=new Date(dateStr);exp.setHours(0,0,0,0);
+  const diff=Math.round((exp-now)/86400000);
+  const warn=EXP_WARN[ctype]||7;
+  if(diff<0)return{cls:'b-pink',text:`Expired ${Math.abs(diff)}d ago`};
+  if(diff<=warn)return{cls:'b-warn',text:`Exp in ${diff}d`};
+  return null;
+}
+
+function itemCardHTML(item){
+  const{slotName,container}=slotInfo(item.slotId);
+  const ctype=container?.type||'other';
+  const locBadge=container?`<span class="badge ${BADGE_CLASS[ctype]}">${TYPE_ICONS[ctype]} ${escHtml(container.name)}</span>`:'';
+  const slotBadge=slotName?`<span class="badge b-gray">📍 ${escHtml(slotName)}</span>`:'';
+  const qtyBadge=`<span class="${item.qty===0?'b-qty-zero':'b-qty-ok'}">×${item.qty??1}</span>`;
+  const exp=expiryInfo(item.dateExp,ctype);
+  const dateParts=[];
+  if(item.dateIn)dateParts.push('In: '+item.dateIn);
+  if(item.dateExp)dateParts.push('Use by: '+item.dateExp);
+  const dateLine=dateParts.length?`<span style="color:#bbb;font-size:11px">${dateParts.join(' · ')}</span>`:'';
+  return`<div class="item-card ${CARD_CLASS[ctype]||'t-other'}">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div style="flex:1;min-width:0">
+      <div class="item-name">${escHtml(item.name)}</div>
+      <div class="item-line2">${locBadge}${slotBadge}${qtyBadge}${exp?`<span class="badge ${exp.cls}">${exp.text}</span>`:''}${dateLine}</div>
+      ${item.notes?`<div style="font-size:11px;color:#aaa;margin-top:2px;font-style:italic">${escHtml(item.notes)}</div>`:''}
+    </div>
+    <button class="btn btn-secondary btn-sm" style="margin-left:8px;flex-shrink:0" onclick="openEditModal('${item.id}')">Edit</button>
+  </div>
+</div>`;
+}
+
+// ── Drawer view ────────────────────────────────────────────
+window.renderDrawerItems=function(){
+  const el=document.getElementById('drawer-items');if(!drawerSlotId){el.innerHTML='';return;}
+  const list=items.filter(i=>i.slotId===drawerSlotId);
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>No items here yet.</p></div>';return;}
+  el.innerHTML=list.map(i=>itemCardHTML(i)).join('');
 };
 
 // ── Browse ─────────────────────────────────────────────────
-window.renderBrowse = function() {
-  const q = (document.getElementById('browse-search')?.value || '').toLowerCase();
-  const sort = document.getElementById('browse-sort')?.value || 'name';
-  let list = [...items];
-  if (q) list = list.filter(i => {
-    const loc = locations.find(l => l.id === i.locationId);
-    return (i.name + ' ' + (i.sublocation||'') + ' ' + (loc?.name||'')).toLowerCase().includes(q);
-  });
-  list.sort((a,b) => {
-    if (sort==='name') return (a.name||'').localeCompare(b.name||'');
-    if (sort==='loc') {
-      const la = locations.find(l=>l.id===a.locationId)?.name||'';
-      const lb = locations.find(l=>l.id===b.locationId)?.name||'';
-      return la.localeCompare(lb) || (a.name||'').localeCompare(b.name||'');
-    }
-    if (sort==='added') return (b.dateIn||'').localeCompare(a.dateIn||'');
-    if (sort==='expiry') return (a.dateExp||'9999').localeCompare(b.dateExp||'9999');
+window.renderBrowse=function(){
+  const q=(v('browse-search')||'').toLowerCase();
+  const sort=document.getElementById('browse-sort')?.value||'name';
+  let list=[...items];
+  if(q)list=list.filter(i=>{const{slotName,container}=slotInfo(i.slotId);return(i.name+' '+slotName+' '+(container?.name||'')).toLowerCase().includes(q);});
+  list.sort((a,b)=>{
+    if(sort==='name')return(a.name||'').localeCompare(b.name||'');
+    if(sort==='loc'){const{container:ca,slotName:sa}=slotInfo(a.slotId);const{container:cb,slotName:sb}=slotInfo(b.slotId);return((ca?.name||'')+(sa||'')).localeCompare((cb?.name||'')+(sb||''));}
+    if(sort==='added')return(b.dateIn||'').localeCompare(a.dateIn||'');
+    if(sort==='expiry')return(a.dateExp||'9999').localeCompare(b.dateExp||'9999');
     return 0;
   });
-  const el = document.getElementById('browse-list');
-  if (!list.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">${items.length ? '🔍' : '📦'}</div><p>${items.length ? 'No items match your search.' : 'No items yet — go to the Add tab to get started.'}</p></div>`;
-    return;
-  }
-  el.innerHTML = `<div style="font-size:12px;color:#aaa;margin-bottom:8px">${list.length} item${list.length!==1?'s':''}</div>` + list.map(i => itemCardHTML(i)).join('');
+  const el=document.getElementById('browse-list');
+  if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-icon">${items.length?'🔍':'📦'}</div><p>${items.length?'No items match.':'No items yet — go to Add to get started.'}</p></div>`;return;}
+  el.innerHTML=`<div style="font-size:12px;color:#aaa;margin-bottom:6px">${list.length} item${list.length!==1?'s':''}</div>`+list.map(i=>itemCardHTML(i)).join('');
 };
-
-// ── Item card HTML ─────────────────────────────────────────
-function itemCardHTML(item) {
-  const loc = locations.find(l => l.id === item.locationId);
-  const locName = loc ? `${LOC_ICONS[loc.type]||'📦'} ${loc.name}` : 'Unknown';
-  const borderClass = ITEM_BORDER[loc?.type] || 'other-item';
-  const badgeClass = LOC_COLORS[loc?.type] || 'badge-gray';
-  const exp = expiryBadge(item.dateExp);
-  return `<div class="item-card ${borderClass}">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div style="flex:1;min-width:0">
-        <div class="item-name">${escHtml(item.name)}</div>
-        <div class="item-meta">
-          <span class="badge ${badgeClass}">${locName}</span>
-          ${item.sublocation ? `<span class="badge badge-gray">📍 ${escHtml(item.sublocation)}</span>` : ''}
-          ${item.qty > 1 ? `<span class="badge badge-teal">×${item.qty}</span>` : ''}
-        </div>
-        ${item.dateIn || item.dateExp ? `<div class="item-meta" style="margin-top:4px">${item.dateIn?'In: '+item.dateIn:''}${item.dateExp?' · Use by: '+item.dateExp:''}</div>` : ''}
-        ${exp ? `<div class="${exp.cls}">${exp.text}</div>` : ''}
-        ${item.notes ? `<div style="font-size:12px;color:#888;margin-top:3px;font-style:italic">${escHtml(item.notes)}</div>` : ''}
-      </div>
-      <button class="btn btn-secondary btn-sm" style="margin-left:10px;flex-shrink:0" onclick="openEditModal('${item.id}')">Edit</button>
-    </div>
-  </div>`;
-}
-
-function expiryBadge(dateStr) {
-  if (!dateStr) return null;
-  const now = new Date(); now.setHours(0,0,0,0);
-  const exp = new Date(dateStr); exp.setHours(0,0,0,0);
-  const diff = Math.round((exp - now) / 86400000);
-  if (diff < 0) return {cls:'exp-danger', text:`⚠️ Expired ${Math.abs(diff)} day${Math.abs(diff)!==1?'s':''} ago`};
-  if (diff <= 7) return {cls:'exp-warn', text:`⚠️ Expires in ${diff} day${diff!==1?'s':''}`};
-  return null;
-}
-
-function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function today() { return new Date().toISOString().slice(0,10); }
 
 // ── Save new item ──────────────────────────────────────────
-window.saveNewItem = async function() {
-  const name = document.getElementById('add-name').value.trim();
-  if (!name) { toast('⚠️ Please enter an item name'); return; }
-  if (!addLocId) { toast('⚠️ Please choose a location'); return; }
-  const item = {
-    name,
-    barcode: document.getElementById('add-barcode').value.trim(),
-    locationId: addLocId,
-    sublocation: document.getElementById('add-subloc').value.trim(),
-    qty: addQtyVal,
-    dateIn: document.getElementById('add-date-in').value,
-    dateExp: document.getElementById('add-date-exp').value,
-    notes: document.getElementById('add-notes').value.trim(),
-    updatedAt: new Date().toISOString()
-  };
-  try {
-    await addDoc(collection(db, 'items'), item);
-    document.getElementById('add-name').value = '';
-    document.getElementById('add-barcode').value = '';
-    document.getElementById('add-notes').value = '';
-    document.getElementById('add-date-exp').value = '';
-    document.getElementById('add-subloc').value = '';
-    addQtyVal = 1; document.getElementById('add-qty').textContent = '1';
-    document.getElementById('add-date-in').value = today();
-    stopScan();
-    toast('✅ Item saved!');
-  } catch(e) { toast('Error saving: ' + e.message); }
+window.saveNewItem=async function(){
+  const name=v('add-name');
+  if(!name){toast('⚠️ Please enter a name');return;}
+  if(!addSlotId){toast('⚠️ Please choose a drawer/shelf');return;}
+  try{
+    await addDoc(collection(db,'items'),{name,barcode:v('add-barcode'),slotId:addSlotId,qty:addQtyVal,dateIn:v('add-date-in'),dateExp:v('add-date-exp'),notes:v('add-notes'),updatedAt:new Date().toISOString()});
+    document.getElementById('add-name').value='';
+    document.getElementById('add-barcode').value='';
+    document.getElementById('add-notes').value='';
+    document.getElementById('add-date-exp').value='';
+    document.getElementById('add-date-in').value=today();
+    addQtyVal=1;const qe=document.getElementById('add-qty');qe.textContent='1';qe.className='qty-val';
+    stopScan();toast('✅ Saved!');
+  }catch(e){toast('Error: '+e.message);}
 };
 
-// ── Edit modal ─────────────────────────────────────────────
-window.openEditModal = function(id) {
-  const item = items.find(i => i.id === id);
-  if (!item) return;
-  editingItemId = id;
-  editQtyVal = item.qty || 1;
-  editLocId = item.locationId;
-  document.getElementById('edit-name').value = item.name || '';
-  document.getElementById('edit-subloc').value = item.sublocation || '';
-  document.getElementById('edit-qty').textContent = editQtyVal;
-  document.getElementById('edit-date-in').value = item.dateIn || '';
-  document.getElementById('edit-date-exp').value = item.dateExp || '';
-  document.getElementById('edit-notes').value = item.notes || '';
-  renderChips('edit-loc-chips', editLocId, 'selectEditLoc');
+// ── Edit item modal ────────────────────────────────────────
+window.openEditModal=function(id){
+  const item=items.find(i=>i.id===id);if(!item)return;
+  editingItemId=id;editQtyVal=item.qty??1;
+  const{container}=slotInfo(item.slotId);
+  editTypeId=container?.type||null;editSlotId=item.slotId||null;
+  document.getElementById('edit-name').value=item.name||'';
+  const eq=document.getElementById('edit-qty');eq.textContent=editQtyVal;eq.className='qty-val'+(editQtyVal===0?' zero':'');
+  document.getElementById('edit-date-in').value=item.dateIn||'';
+  document.getElementById('edit-date-exp').value=item.dateExp||'';
+  document.getElementById('edit-notes').value=item.notes||'';
+  renderTypeChips('edit-type-chips',editTypeId,'selectEditType');
+  populateSlotSelect('edit-slot-select',editTypeId,editSlotId);
   showModal('modal-edit');
 };
 
-window.saveEdit = async function() {
-  const name = document.getElementById('edit-name').value.trim();
-  if (!name) { toast('⚠️ Please enter a name'); return; }
-  try {
-    await setDoc(doc(db, 'items', editingItemId), {
-      name,
-      locationId: editLocId,
-      sublocation: document.getElementById('edit-subloc').value.trim(),
-      qty: editQtyVal,
-      dateIn: document.getElementById('edit-date-in').value,
-      dateExp: document.getElementById('edit-date-exp').value,
-      notes: document.getElementById('edit-notes').value.trim(),
-      updatedAt: new Date().toISOString()
-    }, {merge: true});
-    closeModal('modal-edit');
-    toast('✅ Item updated');
-  } catch(e) { toast('Error: ' + e.message); }
+window.saveEdit=async function(){
+  const name=v('edit-name');if(!name){toast('⚠️ Name required');return;}
+  const slotId=document.getElementById('edit-slot-select').value||editSlotId;
+  try{
+    await setDoc(doc(db,'items',editingItemId),{name,slotId,qty:editQtyVal,dateIn:v('edit-date-in'),dateExp:v('edit-date-exp'),notes:v('edit-notes'),updatedAt:new Date().toISOString()},{merge:true});
+    closeModal('modal-edit');toast('✅ Updated');
+  }catch(e){toast('Error: '+e.message);}
 };
 
-window.deleteItem = async function() {
-  if (!confirm('Delete this item?')) return;
-  try {
-    await deleteDoc(doc(db, 'items', editingItemId));
-    closeModal('modal-edit');
-    toast('🗑 Item deleted');
-  } catch(e) { toast('Error: ' + e.message); }
+window.deleteItem=async function(){
+  if(!confirm('Delete this item?'))return;
+  try{await deleteDoc(doc(db,'items',editingItemId));closeModal('modal-edit');toast('🗑 Deleted');}
+  catch(e){toast('Error: '+e.message);}
 };
 
-// ── Locations management ───────────────────────────────────
-function renderLocManage() {
-  document.getElementById('loc-manage-list').innerHTML = locations.map(l =>
-    `<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #f0f0f0">
-      <span style="font-size:20px">${LOC_ICONS[l.type]||'📦'}</span>
-      <span style="flex:1;font-weight:500">${escHtml(l.name)}</span>
-      <span class="badge badge-gray" style="font-size:11px">${l.type}</span>
-      <button class="btn btn-secondary btn-sm" onclick="deleteLocation('${l.id}')">✕</button>
-    </div>`
-  ).join('');
+// ── Locations manager ──────────────────────────────────────
+function renderLocManage(){
+  refreshContainerDropdowns();
+  const el=document.getElementById('loc-manage-list');
+  const grouped={};
+  containers.forEach(c=>{grouped[c.id]={container:c,slots:[]};});
+  slots.forEach(s=>{if(grouped[s.containerId])grouped[s.containerId].slots.push(s);});
+  el.innerHTML=Object.values(grouped).map(({container:c,slots:ss})=>{
+    const col=TYPE_COLORS[c.type]||'#888';
+    return`<div class="loc-group">
+      <div class="loc-group-title" style="background:${col}">${TYPE_ICONS[c.type]||'📦'} ${escHtml(c.name)}</div>
+      ${ss.length?ss.map(s=>`<div class="loc-row"><span class="loc-row-name">📍 ${escHtml(s.name)}</span><button class="btn btn-secondary btn-sm" onclick="openSlotEdit('${s.id}')">Edit</button></div>`).join(''):'<div style="font-size:13px;color:#aaa;padding:4px 10px">No drawers/shelves yet</div>'}
+    </div>`;
+  }).join('');
 }
 
-window.showModal = function(id) {
-  if (id === 'modal-locations') renderLocManage();
-  document.getElementById(id).classList.add('open');
+window.addSlot=async function(){
+  const slotName=v('new-slot-name');if(!slotName){toast('Enter a drawer/shelf name');return;}
+  let containerId=document.getElementById('new-loc-container').value;
+  const newName=v('new-container-name');
+  if(!containerId&&newName){const type=document.getElementById('new-container-type').value;const ref=await addDoc(collection(db,'containers'),{name:newName,type});containerId=ref.id;document.getElementById('new-container-name').value='';}
+  if(!containerId){toast('Select or create a container first');return;}
+  const existing=slots.filter(s=>s.containerId===containerId);
+  await addDoc(collection(db,'slots'),{name:slotName,containerId,sortOrder:existing.length+1});
+  document.getElementById('new-slot-name').value='';
+  renderLocManage();toast('✅ Added');
 };
 
-window.addLocation = async function() {
-  const name = document.getElementById('new-loc-name').value.trim();
-  if (!name) { toast('Enter a location name'); return; }
-  const type = document.getElementById('new-loc-type').value;
-  try {
-    await addDoc(collection(db, 'locations'), {name, type});
-    document.getElementById('new-loc-name').value = '';
-    toast('✅ Location added');
-  } catch(e) { toast('Error: ' + e.message); }
+window.openSlotEdit=function(id){
+  const slot=slots.find(s=>s.id===id);if(!slot)return;
+  editingSlotId=id;
+  document.getElementById('edit-slot-name').value=slot.name||'';
+  refreshContainerDropdowns();
+  const esel=document.getElementById('edit-slot-container');if(esel)esel.value=slot.containerId||'';
+  showModal('modal-edit-slot');
 };
 
-window.deleteLocation = async function(id) {
-  const hasItems = items.some(i => i.locationId === id);
-  if (hasItems && !confirm('This location has items. Delete it and all its items?')) return;
-  try {
-    if (hasItems) {
-      for (const item of items.filter(i => i.locationId === id)) {
-        await deleteDoc(doc(db, 'items', item.id));
-      }
-    }
-    await deleteDoc(doc(db, 'locations', id));
-    renderLocManage();
-    toast('🗑 Location deleted');
-  } catch(e) { toast('Error: ' + e.message); }
+window.saveSlotEdit=async function(){
+  const name=v('edit-slot-name');if(!name){toast('Name required');return;}
+  const containerId=document.getElementById('edit-slot-container').value;
+  try{await updateDoc(doc(db,'slots',editingSlotId),{name,containerId});closeModal('modal-edit-slot');renderLocManage();refreshSlotDropdowns();toast('✅ Updated');}
+  catch(e){toast('Error: '+e.message);}
+};
+
+window.deleteSlot=async function(){
+  const hasItems=items.some(i=>i.slotId===editingSlotId);
+  if(hasItems&&!confirm('This drawer has items. Delete them all?'))return;
+  try{
+    if(hasItems)for(const item of items.filter(i=>i.slotId===editingSlotId))await deleteDoc(doc(db,'items',item.id));
+    await deleteDoc(doc(db,'slots',editingSlotId));
+    closeModal('modal-edit-slot');renderLocManage();toast('🗑 Deleted');
+  }catch(e){toast('Error: '+e.message);}
 };
 
 // ── Bulk add ───────────────────────────────────────────────
-window.openBulkModal = function() {
-  bulkSubLoc = document.getElementById('drawer-filter').value.trim();
-  document.getElementById('bulk-text').value = '';
-  document.getElementById('bulk-date-in').value = today();
+window.openBulkModal=function(){
+  bulkSlotId=drawerSlotId;if(!bulkSlotId){toast('Choose a drawer first');return;}
+  const slot=slots.find(s=>s.id===bulkSlotId);
+  document.getElementById('bulk-loc-name').textContent=slot?.name||'';
+  document.getElementById('bulk-text').value='';
+  document.getElementById('bulk-date-in').value=today();
   showModal('modal-bulk');
 };
 
-window.saveBulk = async function() {
-  const lines = document.getElementById('bulk-text').value.split('\n').map(l=>l.trim()).filter(Boolean);
-  if (!lines.length) { toast('Enter at least one item'); return; }
-  if (!bulkLocId) { toast('Select a location first'); return; }
-  const dateIn = document.getElementById('bulk-date-in').value;
-  let count = 0;
-  for (const line of lines) {
-    const m = line.match(/^(.+?)\s+[xX*]?\s*(\d+)$/) || line.match(/^(.+?)\s+(\d+)$/);
-    const name = m ? m[1].trim() : line;
-    const qty = m ? parseInt(m[2]) : 1;
-    await addDoc(collection(db, 'items'), {
-      name, qty, locationId: bulkLocId, sublocation: bulkSubLoc,
-      dateIn, dateExp: '', barcode: '', notes: '',
-      updatedAt: new Date().toISOString()
-    });
+window.saveBulk=async function(){
+  const lines=document.getElementById('bulk-text').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length){toast('Enter at least one item');return;}
+  const dateIn=v('bulk-date-in');let count=0;
+  for(const line of lines){
+    const m=line.match(/^(.+?)\s+[xX*]?\s*(\d+)$/)||line.match(/^(.+?)\s+(\d+)$/);
+    const name=m?m[1].trim():line;const qty=m?parseInt(m[2]):1;
+    await addDoc(collection(db,'items'),{name,qty,slotId:bulkSlotId,dateIn,dateExp:'',barcode:'',notes:'',updatedAt:new Date().toISOString()});
     count++;
   }
-  closeModal('modal-bulk');
-  toast(`✅ ${count} item${count!==1?'s':''} added`);
+  closeModal('modal-bulk');toast(`✅ ${count} item${count!==1?'s':''} added`);
 };
 
 // ── Barcode scanner ────────────────────────────────────────
-window.startScan = async function() {
-  if (!navigator.mediaDevices) { toast('Camera not available — use Chrome browser'); return; }
-  const vid = document.getElementById('scanner-video');
-  document.getElementById('scanner-ui').style.display = 'none';
-  document.getElementById('scanner-active').style.display = 'block';
-  vid.style.display = 'block';
-  try {
-    scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-    vid.srcObject = scanStream;
-    await vid.play();
-    startQuagga(vid);
-  } catch(e) { toast('Camera error: ' + e.message); stopScan(); }
+window.startScan=async function(){
+  if(!navigator.mediaDevices){toast('Camera not available — use Chrome');return;}
+  document.getElementById('scanner-ui').style.display='none';
+  document.getElementById('scanner-active').style.display='block';
+  const vid=document.getElementById('scanner-video');vid.style.display='block';
+  try{scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});vid.srcObject=scanStream;await vid.play();startQuagga(vid);}
+  catch(e){toast('Camera error: '+e.message);stopScan();}
 };
 
-function startQuagga(vid) {
-  if (!window.Quagga) { setTimeout(() => startQuagga(vid), 500); return; }
-  Quagga.init({
-    inputStream:{type:'LiveStream',target:vid,constraints:{facingMode:'environment',width:640,height:480}},
-    decoder:{readers:['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader']},
-    locate:true
-  }, err => {
-    if (!err) { Quagga.start(); scanRunning = true; }
-    else toast('Scanner init failed: ' + err.message);
+function startQuagga(vid){
+  if(!window.Quagga){setTimeout(()=>startQuagga(vid),500);return;}
+  Quagga.init({inputStream:{type:'LiveStream',target:vid,constraints:{facingMode:'environment'}},decoder:{readers:['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader']},locate:true},err=>{
+    if(!err){Quagga.start();scanRunning=true;}else toast('Scanner error: '+err.message);
   });
-  Quagga.onDetected(async data => {
-    const code = data.codeResult.code;
-    document.getElementById('add-barcode').value = code;
-    stopScan();
-    toast('📦 Barcode: ' + code);
-    await lookupBarcode(code);
-  });
+  Quagga.onDetected(async data=>{const code=data.codeResult.code;document.getElementById('add-barcode').value=code;stopScan();toast('📦 Barcode: '+code);await lookupBarcode(code);});
 }
 
-window.stopScan = function() {
-  if (scanRunning) { try { Quagga.stop(); } catch(e){} scanRunning = false; }
-  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
-  const vid = document.getElementById('scanner-video');
-  vid.srcObject = null; vid.style.display = 'none';
-  document.getElementById('scanner-ui').style.display = 'block';
-  document.getElementById('scanner-active').style.display = 'none';
+window.stopScan=function(){
+  if(scanRunning){try{Quagga.stop();}catch(e){}scanRunning=false;}
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+  const vid=document.getElementById('scanner-video');vid.srcObject=null;vid.style.display='none';
+  document.getElementById('scanner-ui').style.display='block';
+  document.getElementById('scanner-active').style.display='none';
 };
 
-async function lookupBarcode(code) {
-  try {
-    const r = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
-    const d = await r.json();
-    if (d.status === 1 && d.product) {
-      const n = d.product.product_name || d.product.generic_name || '';
-      if (n && !document.getElementById('add-name').value) {
-        document.getElementById('add-name').value = n;
-        toast('✅ Found: ' + n);
-      }
-      const exp = d.product.expiration_date;
-      if (exp) {
-        const parsed = parseExpiry(exp);
-        if (parsed) document.getElementById('add-date-exp').value = parsed;
-      }
-    }
-  } catch(e) { /* offline or not found — silent */ }
+async function lookupBarcode(code){
+  try{const r=await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);const d=await r.json();
+    if(d.status===1&&d.product){const n=d.product.product_name||d.product.generic_name||'';if(n&&!document.getElementById('add-name').value){document.getElementById('add-name').value=n;toast('✅ Found: '+n);}
+      const exp=d.product.expiration_date;if(exp){const p=parseExpiry(exp);if(p)document.getElementById('add-date-exp').value=p;}}
+  }catch(e){}
 }
 
-function parseExpiry(s) {
-  if (!s) return null;
-  const m1 = s.match(/(\d{2})\/(\d{4})/); if (m1) return `${m1[2]}-${m1[1]}-01`;
-  const m2 = s.match(/(\d{4})-(\d{2})-(\d{2})/); if (m2) return s;
-  const m3 = s.match(/(\d{2})\.(\d{2})\.(\d{4})/); if (m3) return `${m3[3]}-${m3[2]}-${m3[1]}`;
+function parseExpiry(s){
+  if(!s)return null;
+  const m1=s.match(/(\d{2})\/(\d{4})/);if(m1)return`${m1[2]}-${m1[1]}-01`;
+  const m2=s.match(/(\d{4})-(\d{2})-(\d{2})/);if(m2)return s;
+  const m3=s.match(/(\d{2})\.(\d{2})\.(\d{4})/);if(m3)return`${m3[3]}-${m3[2]}-${m3[1]}`;
   return null;
 }
 
-// ── Voice input ────────────────────────────────────────────
-function renderVoiceLocs() {
-  renderChips('voice-loc-chips', voiceLocId, 'selectVoiceLoc');
-}
+// ── Voice ──────────────────────────────────────────────────
+window.toggleVoice=function(){isListening?stopVoice():startVoice();};
 
-window.toggleVoice = function() { isListening ? stopVoice() : startVoice(); };
-
-function startVoice() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { toast('Voice recognition needs Chrome browser'); return; }
-  if (!voiceLocId) { toast('⚠️ Please select a location first'); return; }
-  recognition = new SR();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = 'en-GB';
-  recognition.onstart = () => {
-    isListening = true;
-    document.getElementById('voice-btn').classList.add('listening');
-    document.getElementById('voice-status').textContent = '🎙 Listening… say item names, or "done" to stop';
-  };
-  recognition.onend = () => { if (isListening) recognition.start(); };
-  recognition.onerror = e => { if (e.error !== 'aborted') toast('Voice error: ' + e.error); };
-  recognition.onresult = e => {
-    let final = '', interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript;
-      else interim += e.results[i][0].transcript;
-    }
-    if (interim) document.getElementById('voice-result').textContent = interim;
-    if (final) {
-      const words = final.trim().toLowerCase();
-      if (['done','finish','finished','stop','end'].includes(words)) { stopVoice(); return; }
-      document.getElementById('voice-result').textContent = final;
-      final.split(/[,\n]|(?:\band\b)/i).map(s=>s.trim()).filter(s=>s.length>1).forEach(addVoiceItem);
-    }
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice recognition needs Chrome');return;}
+  const slotId=document.getElementById('voice-slot-select')?.value;
+  if(!slotId){toast('⚠️ Choose a drawer/shelf first');return;}
+  voiceSlotId=slotId;
+  recognition=new SR();recognition.continuous=true;recognition.interimResults=true;recognition.lang='en-GB';
+  recognition.onstart=()=>{isListening=true;document.getElementById('voice-btn').classList.add('listening');document.getElementById('voice-status').textContent='🎙 Listening…';};
+  recognition.onend=()=>{if(isListening)recognition.start();};
+  recognition.onerror=e=>{if(e.error!=='aborted')toast('Voice error: '+e.error);};
+  recognition.onresult=e=>{
+    let final='',interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}
+    if(interim)document.getElementById('voice-result').textContent=interim;
+    if(final){if(['done','finish','finished','stop','end'].includes(final.trim().toLowerCase())){stopVoice();return;}
+      document.getElementById('voice-result').textContent=final;
+      final.split(/[,\n]|(?:\band\b)/i).map(s=>s.trim()).filter(s=>s.length>1).forEach(addVoiceItem);}
   };
   recognition.start();
 }
 
-function stopVoice() {
-  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
-  isListening = false;
-  document.getElementById('voice-btn').classList.remove('listening');
-  document.getElementById('voice-status').textContent = '✅ Stopped — review queue below, then tap Save all';
+function stopVoice(){
+  if(recognition){try{recognition.stop();}catch(e){}recognition=null;}
+  isListening=false;document.getElementById('voice-btn').classList.remove('listening');
+  document.getElementById('voice-status').textContent='✅ Stopped — review queue, then Save all';
 }
 
-function addVoiceItem(name) {
-  name = name.charAt(0).toUpperCase() + name.slice(1);
-  voiceQueue.push({
-    id: 'v' + Date.now() + Math.random().toString(36).slice(2,5),
-    name, locationId: voiceLocId,
-    sublocation: document.getElementById('voice-subloc').value.trim(),
-    qty: 1, dateIn: today(), dateExp: '', barcode: '', notes: '',
-    updatedAt: new Date().toISOString()
-  });
+function addVoiceItem(name){
+  name=name.charAt(0).toUpperCase()+name.slice(1);
+  voiceQueue.push({id:'v'+Date.now()+Math.random().toString(36).slice(2,5),name,slotId:voiceSlotId,qty:1,dateIn:today(),dateExp:'',barcode:'',notes:'',updatedAt:new Date().toISOString()});
   renderVoiceQueue();
 }
 
-function renderVoiceQueue() {
-  const el = document.getElementById('voice-queue-list');
-  const container = document.getElementById('voice-queue-container');
-  if (!voiceQueue.length) { container.style.display = 'none'; return; }
-  container.style.display = 'block';
-  document.getElementById('voice-queue-title').textContent = `Queue (${voiceQueue.length} item${voiceQueue.length!==1?'s':''} — tap to remove)`;
-  el.innerHTML = voiceQueue.map((item, idx) =>
-    `<div class="item-card" style="cursor:pointer" onclick="removeVoiceItem(${idx})">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span class="item-name">${escHtml(item.name)}</span>
-        <span style="color:#aaa;font-size:12px">tap to remove ✕</span>
-      </div>
-    </div>`
-  ).join('');
+function renderVoiceQueue(){
+  const el=document.getElementById('voice-queue-list');const con=document.getElementById('voice-queue-container');
+  if(!voiceQueue.length){con.style.display='none';return;}
+  con.style.display='block';
+  document.getElementById('voice-queue-title').textContent=`Queue (${voiceQueue.length} item${voiceQueue.length!==1?'s':''} — tap to remove)`;
+  el.innerHTML=voiceQueue.map((item,idx)=>`<div class="item-card" style="cursor:pointer" onclick="removeVoiceItem(${idx})"><div style="display:flex;justify-content:space-between;align-items:center"><span class="item-name">${escHtml(item.name)}</span><span style="color:#aaa;font-size:12px">✕ remove</span></div></div>`).join('');
 }
 
-window.removeVoiceItem = function(idx) { voiceQueue.splice(idx, 1); renderVoiceQueue(); };
+window.removeVoiceItem=function(idx){voiceQueue.splice(idx,1);renderVoiceQueue();};
 
-window.saveVoiceQueue = async function() {
-  if (!voiceQueue.length) { toast('Nothing in queue'); return; }
-  let count = 0;
-  for (const item of voiceQueue) {
-    const {id, ...data} = item;
-    await addDoc(collection(db, 'items'), data);
-    count++;
-  }
-  voiceQueue = [];
-  renderVoiceQueue();
-  document.getElementById('voice-result').textContent = 'Speech will appear here…';
+window.saveVoiceQueue=async function(){
+  if(!voiceQueue.length){toast('Nothing in queue');return;}
+  let count=0;
+  for(const item of voiceQueue){const{id,...data}=item;await addDoc(collection(db,'items'),data);count++;}
+  voiceQueue=[];renderVoiceQueue();document.getElementById('voice-result').textContent='Speech will appear here…';
   toast(`✅ ${count} item${count!==1?'s':''} saved!`);
 };
-
-window.clearVoiceQueue = function() { voiceQueue = []; renderVoiceQueue(); };
+window.clearVoiceQueue=function(){voiceQueue=[];renderVoiceQueue();};
 
 // ── Startup ────────────────────────────────────────────────
-const savedConfig = loadConfig();
-if (savedConfig) {
-  initFirebase(savedConfig);
-} else {
-  document.getElementById('config-screen').classList.add('visible');
-}
-document.getElementById('add-date-in').value = today();
+const saved=loadConfig();
+if(saved){initFirebase(saved);}
+else{document.getElementById('config-screen').style.display='block';}
+document.getElementById('add-date-in').value=today();
 </script>
 
-<!-- Quagga barcode library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-
-<!-- Service Worker registration (for PWA offline) -->
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 </body>
 </html>
