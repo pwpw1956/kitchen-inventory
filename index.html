@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Kitchen Inventory v1.4 — generated 2026-04-15 15:04 UTC -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,13 +10,12 @@
 <meta name="apple-mobile-web-app-title" content="Kitchen Inv">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Kitchen Inventory</title>
+<title>Kitchen Inventory v1.4</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;color:#1a1a1a;background:#f0f2f5}
 
-/* ── App shell ── */
 #app{height:100vh;display:flex;flex-direction:column;max-width:640px;margin:0 auto}
 .topbar{background:#185FA5;color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,0.15)}
 .topbar h1{font-size:17px;font-weight:600;flex:1}
@@ -23,55 +23,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
 .tab-bar{display:flex;background:#fff;border-bottom:1px solid #e0e0e0;flex-shrink:0}
 .tab{flex:1;padding:9px 2px;text-align:center;font-size:11px;color:#888;cursor:pointer;border-bottom:2px solid transparent;font-weight:500}
 .tab.active{color:#185FA5;border-bottom-color:#185FA5}
-
-/* ── Fix #2: pages stops above Android nav bar ── */
 .pages{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
 .page{display:none;padding:10px}
 .page.active{display:block}
 
-/* ── Cards & fields ── */
 .card{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
 .card-title{font-size:11px;font-weight:600;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em}
+
 .field{margin-bottom:10px}
 .field label{display:block;font-size:12px;color:#555;margin-bottom:3px;font-weight:500}
 .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit;-webkit-appearance:none;appearance:none}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
 .field textarea{resize:vertical;min-height:52px}
-select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 
-/* ── Fix #1: dates left half-width, save button right half, notes full width below ── */
+/* dropdown arrow for all selects */
+.field select, .slot-select, select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px
+}
+
+/* Fix #1 — dates left, save button right */
 .dates-save-row{display:flex;gap:8px;align-items:stretch;margin-bottom:10px}
 .dates-col{display:flex;flex-direction:column;gap:8px;flex:1}
 .dates-col .field{margin-bottom:0}
-.save-col{flex:0 0 90px;display:flex}
-.btn-save-tall{width:100%;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;line-height:1.3;padding:6px}
+.save-col{flex:0 0 88px;display:flex}
+.btn-save-tall{width:100%;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;line-height:1.4;padding:6px 4px}
 .btn-save-tall:active{opacity:0.75}
 
-/* ── Buttons ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit}
 .btn:active{opacity:0.75}
 .btn-primary{background:#185FA5;color:#fff}
 .btn-secondary{background:#f0f2f5;color:#1a1a1a;border:1px solid #ddd}
 .btn-danger{background:#c0392b;color:#fff}
 .btn-success{background:#27ae60;color:#fff}
+.btn-warn{background:#e67e22;color:#fff}
 .btn-full{width:100%;margin-bottom:6px}
 .btn-sm{padding:5px 10px;font-size:12px}
 
-/* ── Container/type chips ── */
+/* container-type chips */
 .type-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.type-chip{padding:6px 12px;border-radius:20px;font-size:13px;background:#f0f2f5;border:1px solid #ddd;cursor:pointer;font-weight:500}
+.type-chip{padding:6px 12px;border-radius:20px;font-size:13px;background:#f0f2f5;border:1px solid #ddd;cursor:pointer;font-weight:500;transition:background 0.1s}
 
-/* ── Slot select ── */
 .slot-select{width:100%;padding:9px 28px 9px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit;-webkit-appearance:none;appearance:none}
 .slot-select:focus{outline:none;border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
 
-/* ── Qty ── */
 .qty-row{display:flex;align-items:center;gap:10px}
 .qty-btn{width:34px;height:34px;border-radius:50%;background:#f0f2f5;border:1px solid #ddd;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300}
 .qty-val{font-size:22px;font-weight:700;min-width:36px;text-align:center;padding:3px 8px;border-radius:8px;background:#e6f1fb;color:#185FA5}
 .qty-val.zero{background:#fde8e8;color:#c0392b}
 
-/* ── Item cards ── */
 .item-card{background:#fff;border-radius:10px;padding:9px 12px;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,0.07);border-left:3px solid #ddd}
 .item-card.t-freezer{border-left-color:#185FA5}
 .item-card.t-fridge{border-left-color:#17a589}
@@ -79,6 +79,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
 .item-card.t-other{border-left-color:#7f8c8d}
 .item-name{font-size:14px;font-weight:600;color:#1a1a1a}
 .item-line2{font-size:11px;color:#888;margin-top:2px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+
 .badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
 .b-blue{background:#e6f1fb;color:#185FA5}
 .b-teal{background:#d5f5e3;color:#1e8449}
@@ -89,53 +90,34 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
 .b-qty-ok{background:#e6f1fb;color:#185FA5;font-size:12px;padding:2px 8px;border-radius:10px;font-weight:700}
 .b-qty-zero{background:#fde8e8;color:#c0392b;font-size:12px;padding:2px 8px;border-radius:10px;font-weight:700}
 
-/* ── Browse search row ── */
-.search-row{display:flex;gap:8px;margin-bottom:8px}
-.search-row input{flex:1;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;font-family:inherit}
-.search-row select{padding:9px 26px 9px 8px;border:1px solid #ddd;border-radius:8px;font-size:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 6px center;-webkit-appearance:none;color:#1a1a1a;font-family:inherit;min-width:90px}
-
-/* ── Qty filter row ── */
-.qty-filter-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:#fff;border-radius:8px;padding:8px 12px;border:1px solid #ddd}
-.qty-filter-row label{font-size:13px;color:#555;white-space:nowrap}
-.qty-filter-row input[type=number]{width:60px;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:14px;text-align:center;font-family:inherit}
-.qty-filter-row button{font-size:12px;padding:5px 10px}
-
-/* ── Section heads ── */
 .section-head{font-size:11px;font-weight:700;color:#888;padding:6px 0 5px;border-bottom:1px solid #e8e8e8;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;display:flex;justify-content:space-between;align-items:center}
 
-/* ── Voice ── */
 .voice-btn{width:68px;height:68px;border-radius:50%;background:#185FA5;border:none;color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 12px rgba(24,95,165,0.3)}
 .voice-btn.listening{background:#c0392b;animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.4)}60%{box-shadow:0 0 0 16px rgba(192,57,43,0)}}
 .voice-result{min-height:44px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:10px;font-size:14px;color:#555;margin:10px 0;line-height:1.5}
 
-/* ── Scanner ── */
 .scanner-box{border:2px dashed #c5d8ef;border-radius:12px;padding:14px;text-align:center;background:#f8fbff;margin-bottom:10px}
 #scanner-video{width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:none}
 
-/* ── Toast ── */
-.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;bottom:64px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── Modals ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 40px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 44px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto}
 .modal-title{font-size:17px;font-weight:600;margin-bottom:14px;color:#1a1a1a}
 .modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 
-/* ── Sync ── */
 .sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
 .sync-dot.ok{background:#2ecc71}.sync-dot.err{background:#e74c3c}
 .sync-dot.spin{background:#3498db;animation:sp 1s ease-in-out infinite}
 @keyframes sp{0%,100%{opacity:1}50%{opacity:0.3}}
 
-/* ── Empty ── */
 .empty{text-align:center;padding:40px 20px;color:#aaa}
 .empty-icon{font-size:44px;margin-bottom:10px}
 
-/* ── Config screen ── */
 #config-screen{display:none;position:fixed;inset:0;background:#f0f2f5;z-index:1000;overflow-y:auto;padding:24px 16px}
 .cfg-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .cfg-card h2{font-size:16px;font-weight:600;margin-bottom:6px}
@@ -143,18 +125,17 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
 .step-num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#185FA5;color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center;margin-right:7px;flex-shrink:0}
 .step-row{display:flex;align-items:flex-start;margin-bottom:9px;font-size:13px;color:#444;line-height:1.6}
 
-/* ── Locations manager ── */
-.loc-group{margin-bottom:14px}
-.loc-group-hdr{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;border-radius:6px;margin-bottom:5px}
+.loc-group{margin-bottom:12px}
+.loc-group-hdr{padding:6px 12px;border-radius:6px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
 .loc-group-title{font-size:12px;font-weight:700;color:#fff}
 .loc-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f8f9fa;border-radius:8px;margin-bottom:4px}
 .loc-row-name{flex:1;font-size:14px;font-weight:500}
 
-/* ── Auto-number tool ── */
-.autonumber-box{background:#f0f7ff;border:1px solid #c5d8ef;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px}
-.autonumber-box label{color:#185FA5;font-weight:600;display:block;margin-bottom:6px}
-.autonumber-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.autonumber-row input{flex:1;min-width:80px;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit}
+.autonumber-box{background:#f0f7ff;border:1px solid #c5d8ef;border-radius:8px;padding:10px 12px;margin-top:8px}
+.autonumber-box p{font-size:12px;font-weight:600;color:#185FA5;margin-bottom:6px}
+
+/* version badge in corner */
+#ver-badge{position:fixed;bottom:2px;right:4px;font-size:9px;color:#bbb;z-index:10;pointer-events:none}
 </style>
 </head>
 <body>
@@ -163,7 +144,8 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
 <div id="config-screen">
   <div style="max-width:500px;margin:0 auto">
     <div style="text-align:center;margin-bottom:20px">
-      <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="30" fill="#185FA5"/>
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="30" fill="#185FA5"/>
         <line x1="30" y1="5" x2="30" y2="55" stroke="white" stroke-width="5" stroke-linecap="round"/>
         <line x1="5" y1="30" x2="55" y2="30" stroke="white" stroke-width="5" stroke-linecap="round"/>
         <line x1="11" y1="11" x2="49" y2="49" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
@@ -178,7 +160,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
         <line x1="55" y1="30" x2="44" y2="37" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
       <h1 style="font-size:22px;font-weight:700;margin-top:10px">Kitchen Inventory</h1>
-      <p style="font-size:14px;color:#666;margin-top:4px">One-time Firebase setup</p>
+      <p style="font-size:13px;color:#888;margin-top:2px">v1.4 — 2026-04-15</p>
     </div>
     <div class="cfg-card">
       <h2>📋 Setup steps</h2>
@@ -202,6 +184,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
       <div class="step-row"><span class="step-num">1</span><span>Open this URL in <strong>Chrome</strong> (not Samsung Browser).</span></div>
       <div class="step-row"><span class="step-num">2</span><span>Tap <strong>⋮ → Add to Home screen → Add</strong>.</span></div>
       <div class="step-row"><span class="step-num">3</span><span>Repeat on your wife's phone — both share the same data.</span></div>
+      <div class="step-row"><span class="step-num">4</span><span><strong>To force a fresh load after updates:</strong> add <code style="background:#f0f2f5;padding:1px 5px;border-radius:4px">?v=2</code> (or any new number) to the URL.</span></div>
     </div>
   </div>
 </div>
@@ -228,7 +211,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
     <span style="font-size:11px;display:flex;align-items:center;gap:3px;opacity:0.85">
       <span class="sync-dot spin" id="sync-dot"></span><span id="sync-text">…</span>
     </span>
-    <button class="icon-btn" onclick="showModal('modal-locations')">⚙️</button>
+    <button class="icon-btn" onclick="openLocModal()">⚙️</button>
   </div>
 
   <div class="tab-bar">
@@ -267,7 +250,9 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
 
       <div class="card">
         <div class="card-title">Location * — choose container then drawer/shelf</div>
-        <div class="type-chips" id="add-type-chips"></div>
+        <div class="type-chips" id="add-type-chips">
+          <span style="font-size:13px;color:#aaa">Loading locations…</span>
+        </div>
         <div id="add-slot-row" style="display:none;margin-top:4px">
           <label style="font-size:12px;color:#555;font-weight:500;display:block;margin-bottom:4px">Drawer / shelf</label>
           <select class="slot-select" id="add-slot-select" onchange="addSlotChanged()">
@@ -287,8 +272,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
             <span style="font-size:12px;color:#888;margin-left:6px">portion(s)/pack(s)</span>
           </div>
         </div>
-
-        <!-- Fix #1: dates stacked left, save button tall on right -->
+        <!-- dates left, save right -->
         <div class="dates-save-row">
           <div class="dates-col">
             <div class="field">
@@ -304,7 +288,6 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
             <button class="btn-save-tall" onclick="saveNewItem()">✓<br>Save<br>item</button>
           </div>
         </div>
-
         <div class="field">
           <label>Notes (optional)</label>
           <textarea id="add-notes" placeholder="Any extra info…"></textarea>
@@ -334,11 +317,11 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
     <!-- BROWSE TAB -->
     <div class="page" id="page-browse">
       <div style="display:flex;gap:8px;margin-bottom:6px">
-        <input type="text" id="browse-search" placeholder="Search by name or location…"
+        <input type="text" id="browse-search" placeholder="Search name or location…"
           style="flex:1;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit"
           oninput="renderBrowse()">
         <select id="browse-sort" onchange="renderBrowse()"
-          style="padding:9px 26px 9px 8px;border:1px solid #ddd;border-radius:8px;font-size:12px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 6px center;-webkit-appearance:none;color:#1a1a1a;font-family:inherit">
+          style="padding:9px 26px 9px 8px;border:1px solid #ddd;border-radius:8px;font-size:12px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 6px center;-webkit-appearance:none;color:#1a1a1a;font-family:inherit;min-width:90px">
           <option value="name">A–Z</option>
           <option value="loc">Location</option>
           <option value="added">Date added</option>
@@ -347,21 +330,21 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
           <option value="qty-desc">Qty ↓</option>
         </select>
       </div>
-      <!-- Quantity filter -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:#fff;border-radius:8px;padding:7px 12px;border:1px solid #ddd;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;background:#fff;border-radius:8px;padding:7px 10px;border:1px solid #ddd;flex-wrap:wrap">
         <label style="font-size:13px;color:#555;white-space:nowrap">Filter qty:</label>
         <select id="qty-filter-op" onchange="renderBrowse()"
-          style="padding:5px 24px 5px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 6px center;-webkit-appearance:none;font-family:inherit;color:#1a1a1a">
-          <option value="any">Any</option>
-          <option value="eq">= (exact)</option>
-          <option value="lte">≤</option>
-          <option value="gte">≥</option>
+          style="padding:5px 22px 5px 7px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 5px center;-webkit-appearance:none;font-family:inherit;color:#1a1a1a">
+          <option value="any">Any qty</option>
+          <option value="eq">= exact</option>
+          <option value="lte">≤ or less</option>
+          <option value="gte">≥ or more</option>
         </select>
         <input type="number" id="qty-filter-val" min="0" value="0" oninput="renderBrowse()"
-          style="width:56px;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:14px;text-align:center;font-family:inherit">
-        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('qty-filter-op').value='any';renderBrowse()">Clear</button>
-        <span style="font-size:12px;color:#aaa;flex:1;text-align:right" id="browse-count"></span>
+          style="width:52px;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:14px;text-align:center;font-family:inherit">
+        <button class="btn btn-secondary btn-sm" onclick="clearQtyFilter()">Clear</button>
+        <button class="btn btn-warn btn-sm" onclick="exportShoppingList()" style="margin-left:auto">🛒 Shopping list</button>
       </div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:6px" id="browse-count"></div>
       <div id="browse-list"></div>
     </div>
 
@@ -396,6 +379,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
   </div><!-- /pages -->
 </div><!-- /app -->
 
+<div id="ver-badge">v1.4 · 2026-04-15</div>
 <div class="toast" id="toast"></div>
 
 <!-- ── LOCATIONS MODAL ──────────────────────────────────── -->
@@ -403,24 +387,27 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Manage locations</div>
-    <div id="loc-manage-list"></div>
+
+    <!-- Live list of containers + their slots -->
+    <div id="loc-manage-list"><p style="color:#aaa;font-size:13px">Loading…</p></div>
+
     <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
     <p style="font-size:13px;font-weight:600;margin-bottom:10px">Add a drawer / shelf</p>
 
+    <!-- Step 1: pick or create container -->
     <div class="field">
-      <label>Container (the fridge, freezer, etc.)</label>
-      <select id="new-loc-container" class="slot-select" onchange="newContainerChanged()">
-        <option value="">— select existing —</option>
+      <label>1. Select an existing container</label>
+      <select id="new-loc-container" class="slot-select">
+        <option value="">— choose —</option>
       </select>
     </div>
-
-    <div id="new-container-fields" style="background:#f8f9fa;border-radius:8px;padding:10px;margin-bottom:10px">
+    <div id="new-container-section" style="background:#f8f9fa;border-radius:8px;padding:10px;margin-bottom:10px">
       <p style="font-size:12px;color:#888;margin-bottom:8px">— or create a new container —</p>
       <div style="display:flex;gap:8px">
         <input type="text" id="new-container-name" placeholder="e.g. Garage Freezer"
           style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit">
         <select id="new-container-type"
-          style="padding:8px 28px 8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22%3E%3Cpath d=%22M1 1l5 5 5-5%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 8px center;-webkit-appearance:none;font-family:inherit">
+          style="padding:8px 26px 8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit;-webkit-appearance:none;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 7px center">
           <option value="freezer">Freezer</option>
           <option value="fridge">Fridge</option>
           <option value="cupboard">Cupboard</option>
@@ -429,25 +416,27 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
       </div>
     </div>
 
+    <!-- Step 2: name the slot -->
     <div class="field">
-      <label>Drawer / shelf name *</label>
-      <input type="text" id="new-slot-name" placeholder="e.g. GF1 – Quick Freeze, Top shelf…"
-        style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit">
+      <label>2. Drawer / shelf name *</label>
+      <input type="text" id="new-slot-name" placeholder="e.g. GF1, Top shelf…"
+        style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit"
+        oninput="slotNameTyped()">
     </div>
 
     <!-- Auto-number tool -->
     <div class="autonumber-box" id="autonumber-box" style="display:none">
-      <label>🔢 Auto-number more drawers from this name</label>
-      <div class="autonumber-row">
+      <p>🔢 Auto-number a run of drawers from this name</p>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <span style="font-size:13px;color:#555">How many drawers total?</span>
         <input type="number" id="autonumber-count" min="2" max="20" value="4"
-          style="width:56px;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:center">
-        <button class="btn btn-primary btn-sm" onclick="autoNumberSlots()">Generate</button>
+          style="width:52px;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-family:inherit;text-align:center">
+        <button class="btn btn-primary btn-sm" onclick="autoNumberSlots()">Generate all</button>
       </div>
-      <p style="font-size:12px;color:#888;margin-top:6px">Adds drawers GF1, GF2, GF3… (or whatever prefix the name starts with). You can then edit each name to add a description.</p>
+      <p style="font-size:12px;color:#888;margin-top:6px">Tip: type <em>GF1</em> to get GF1, GF2, GF3… or <em>GF1 – Meat</em> and edit names afterwards.</p>
     </div>
 
-    <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="addSlot()">＋ Add this drawer / shelf</button>
+    <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="addOneSlot()">＋ Add this drawer / shelf</button>
     <button class="btn btn-secondary btn-full" onclick="closeModal('modal-locations')">Done</button>
   </div>
 </div>
@@ -467,8 +456,8 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
       <select id="edit-slot-container" class="slot-select"></select>
     </div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="saveSlotEdit()">✓ Save</button>
-      <button class="btn btn-danger"  onclick="deleteSlot()">🗑 Delete</button>
+      <button class="btn btn-primary"   onclick="saveSlotEdit()">✓ Save</button>
+      <button class="btn btn-danger"    onclick="deleteSlot()">🗑 Delete</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-edit-slot')">Cancel</button>
     </div>
   </div>
@@ -485,7 +474,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
         style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit">
     </div>
     <div class="field">
-      <label>Container</label>
+      <label>Container type</label>
       <div class="type-chips" id="edit-type-chips"></div>
     </div>
     <div class="field">
@@ -518,7 +507,7 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Bulk add to <span id="bulk-loc-name" style="color:#185FA5"></span></div>
-    <p style="font-size:13px;color:#666;margin-bottom:10px">One item per line. Add quantity at end: <em>Chicken breast x3</em></p>
+    <p style="font-size:13px;color:#666;margin-bottom:10px">One item per line. Quantity at end: <em>Chicken breast x3</em></p>
     <textarea id="bulk-text"
       style="width:100%;min-height:140px;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit"
       placeholder="Peas&#10;Chicken breast x3&#10;Leftover soup&#10;Fish fingers x6"></textarea>
@@ -530,6 +519,26 @@ select,.slot-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:
   </div>
 </div>
 
+<!-- ── SHOPPING LIST MODAL ──────────────────────────────── -->
+<div class="modal-overlay" id="modal-shopping">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🛒 Shopping list</div>
+    <p style="font-size:13px;color:#666;margin-bottom:10px">These are the items currently shown in Browse (based on your search/filter). Copy the text below or use one of the share options.</p>
+    <textarea id="shopping-text"
+      style="width:100%;min-height:180px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:monospace;line-height:1.6"
+      readonly></textarea>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn btn-primary" onclick="copyShoppingList()">📋 Copy text</button>
+      <button class="btn btn-success" onclick="shareShoppingList()">↗ Share…</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-shopping')">Close</button>
+    </div>
+    <p id="share-note" style="font-size:12px;color:#888;margin-top:8px">
+      "Share…" opens Android's share sheet — you can send to WhatsApp, email, Messages, or any other app.
+    </p>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
 <script type="module">
@@ -537,148 +546,196 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
   getFirestore, collection, doc,
   addDoc, setDoc, updateDoc, deleteDoc,
-  onSnapshot, query, orderBy, getDocs
+  onSnapshot, query, orderBy
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// ── State ──────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────
 let db = null;
-let containers = [];   // {id, name, type}
-let slots      = [];   // {id, name, containerId, sortOrder}
-let items      = [];   // {id, name, slotId, qty, dateIn, dateExp, notes, barcode}
+let containers = [];   // [{id, name, type}]  — fetched via onSnapshot, sorted in JS
+let slots      = [];   // [{id, name, containerId, sortOrder}]  — sorted in JS only
+let items      = [];   // [{id, name, slotId, qty, dateIn, dateExp, notes, barcode}]
 
 let addQtyVal=1, editQtyVal=1;
-let addTypeId=null,  editTypeId=null,  voiceTypeId=null,  drawerTypeId=null;
-let addSlotId=null,  editSlotId=null,  voiceSlotId=null,  drawerSlotId=null;
+let addTypeId=null, editTypeId=null, voiceTypeId=null, drawerTypeId=null;
+let addSlotId=null, editSlotId=null, voiceSlotId=null, drawerSlotId=null;
 let editingItemId=null, editingSlotId=null, bulkSlotId=null;
 let voiceQueue=[], recognition=null, isListening=false;
 let scanStream=null, scanRunning=false;
+
+// Items visible in browse (used for shopping list export)
+let browseVisible = [];
 
 const EXP_WARN   = {freezer:7, fridge:3, cupboard:14, other:7};
 const TYPE_COLORS= {freezer:'#185FA5', fridge:'#17a589', cupboard:'#8e44ad', other:'#7f8c8d'};
 const TYPE_ICONS = {freezer:'❄️', fridge:'🧊', cupboard:'🗄️', other:'📦'};
 const TYPE_LABELS= {freezer:'Freezer', fridge:'Fridge', cupboard:'Cupboard', other:'Other'};
 const CARD_CLASS = {freezer:'t-freezer', fridge:'t-fridge', cupboard:'t-cupboard', other:'t-other'};
-const BADGE_CLASS= {freezer:'b-blue', fridge:'b-teal', cupboard:'b-purple', other:'b-gray'};
+const BADGE_CLASS= {freezer:'b-blue',   fridge:'b-teal',   cupboard:'b-purple',   other:'b-gray'};
 
-// ── Firebase ───────────────────────────────────────────────
-function loadConfig(){try{return JSON.parse(localStorage.getItem('fb_config')||'null');}catch(e){return null;}}
-
-window.saveFirebaseConfig=function(){
-  const cfg={
-    apiKey:        g('cfg-apiKey').value.trim(),
-    authDomain:    g('cfg-authDomain').value.trim(),
-    projectId:     g('cfg-projectId').value.trim(),
-    appId:         g('cfg-appId').value.trim(),
-    storageBucket:'', messagingSenderId:''
-  };
-  if(!cfg.apiKey||!cfg.projectId){cfgErr('Please fill in API Key and Project ID.');return;}
-  localStorage.setItem('fb_config',JSON.stringify(cfg));
-  initFirebase(cfg);
-};
-
-function cfgErr(m){const e=g('cfg-error');e.textContent=m;e.style.display='block';}
-
-async function initFirebase(cfg){
-  try{
-    const app=initializeApp(cfg); db=getFirestore(app);
-    g('config-screen').style.display='none';
-    g('app').style.display='flex';
-    startListeners();
-    setSyncStatus('spin','Connecting…');
-  }catch(e){cfgErr('Connection failed: '+e.message);localStorage.removeItem('fb_config');}
-}
-
-function startListeners(){
-  // containers — order by name
-  onSnapshot(
-    query(collection(db,'containers'),orderBy('name')),
-    snap=>{
-      containers=snap.docs.map(d=>({id:d.id,...d.data()}));
-      if(!containers.length) seedDefaults();
-      else { refreshTypeChips(); refreshContainerDropdowns(); }
-      setSyncStatus('ok','Synced');
-    },
-    ()=>setSyncStatus('err','Offline')
-  );
-
-  // slots — order by sortOrder then name
-  onSnapshot(
-    query(collection(db,'slots'),orderBy('sortOrder'),orderBy('name')),
-    snap=>{
-      slots=snap.docs.map(d=>({id:d.id,...d.data()}));
-      refreshSlotDropdowns();
-      renderLocManageIfOpen();
-    }
-  );
-
-  // items
-  onSnapshot(
-    query(collection(db,'items'),orderBy('name')),
-    snap=>{
-      items=snap.docs.map(d=>({id:d.id,...d.data()}));
-      renderDrawerItems(); renderBrowse();
-      setSyncStatus('ok','Synced');
-    },
-    ()=>setSyncStatus('err','Offline')
-  );
-}
-
-async function seedDefaults(){
-  const gc=await addDoc(collection(db,'containers'),{name:'Garage Freezer',  type:'freezer'});
-  const kc=await addDoc(collection(db,'containers'),{name:'Kitchen Freezer', type:'freezer'});
-  const fc=await addDoc(collection(db,'containers'),{name:'Fridge',          type:'fridge'});
-  const pc=await addDoc(collection(db,'containers'),{name:'Cupboards',       type:'cupboard'});
-  const seeds=[
-    {name:'GF1 – Quick Freeze',containerId:gc.id,sortOrder:1},
-    {name:'GF2 – Meat',        containerId:gc.id,sortOrder:2},
-    {name:'GF3 – Veg & Fish',  containerId:gc.id,sortOrder:3},
-    {name:'GF4 – Bottom',      containerId:gc.id,sortOrder:4},
-    {name:'KF1 – Top',         containerId:kc.id,sortOrder:1},
-    {name:'KF2 – Middle',      containerId:kc.id,sortOrder:2},
-    {name:'KF3 – Bottom',      containerId:kc.id,sortOrder:3},
-    {name:'Top shelf',         containerId:fc.id,sortOrder:1},
-    {name:'Middle shelf',      containerId:fc.id,sortOrder:2},
-    {name:'Bottom shelf',      containerId:fc.id,sortOrder:3},
-    {name:'Door',              containerId:fc.id,sortOrder:4},
-    {name:'Salad drawer',      containerId:fc.id,sortOrder:5},
-    {name:'Shelf 1',           containerId:pc.id,sortOrder:1},
-    {name:'Shelf 2',           containerId:pc.id,sortOrder:2},
-    {name:'Shelf 3',           containerId:pc.id,sortOrder:3},
-  ];
-  for(const s of seeds) await addDoc(collection(db,'slots'),s);
-}
-
-// ── Utilities ──────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Utilities
+// ─────────────────────────────────────────────────────────────
 const g = id => document.getElementById(id);
-function today(){return new Date().toISOString().slice(0,10);}
-function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+const today = () => new Date().toISOString().slice(0,10);
+const esc   = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-function toast(msg,dur=2500){
+function toast(msg, dur=2500){
   const el=g('toast'); el.textContent=msg; el.classList.add('show');
   clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),dur);
 }
-
 function setSyncStatus(state,text){
   g('sync-dot').className='sync-dot '+state;
   g('sync-text').textContent=text;
 }
 
-// ── Modals ─────────────────────────────────────────────────
-window.showModal=function(id){
-  if(id==='modal-locations') renderLocManage();
-  g(id).classList.add('open');
-};
-window.closeModal=function(id){g(id).classList.remove('open');};
-document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
-});
+// ─────────────────────────────────────────────────────────────
+// Firebase init
+// ─────────────────────────────────────────────────────────────
+function loadConfig(){
+  try{ return JSON.parse(localStorage.getItem('fb_config')||'null'); }catch(e){ return null; }
+}
 
-function renderLocManageIfOpen(){
+window.saveFirebaseConfig = function(){
+  const cfg = {
+    apiKey:         g('cfg-apiKey').value.trim(),
+    authDomain:     g('cfg-authDomain').value.trim(),
+    projectId:      g('cfg-projectId').value.trim(),
+    appId:          g('cfg-appId').value.trim(),
+    storageBucket:'', messagingSenderId:''
+  };
+  if(!cfg.apiKey||!cfg.projectId){
+    const e=g('cfg-error'); e.textContent='Please fill in API Key and Project ID.'; e.style.display='block';
+    return;
+  }
+  localStorage.setItem('fb_config', JSON.stringify(cfg));
+  initFirebase(cfg);
+};
+
+async function initFirebase(cfg){
+  try{
+    const app = initializeApp(cfg);
+    db = getFirestore(app);
+    g('config-screen').style.display='none';
+    g('app').style.display='flex';
+    setSyncStatus('spin','Connecting…');
+    startListeners();
+  }catch(e){
+    const err=g('cfg-error'); err.textContent='Connection failed: '+e.message; err.style.display='block';
+    localStorage.removeItem('fb_config');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Firestore listeners
+// NOTE: we ONLY use orderBy on a single field to avoid the
+// composite-index requirement. All secondary sorting is in JS.
+// ─────────────────────────────────────────────────────────────
+function startListeners(){
+  // containers — order by name (single field, no index needed)
+  onSnapshot(
+    query(collection(db,'containers'), orderBy('name')),
+    snap => {
+      containers = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      if(containers.length === 0){
+        seedDefaults();
+      } else {
+        afterContainersLoaded();
+      }
+      setSyncStatus('ok','Synced');
+    },
+    err => { console.error('containers listener', err); setSyncStatus('err','Offline'); }
+  );
+
+  // slots — order by name only (sortOrder secondary sort done in JS)
+  onSnapshot(
+    query(collection(db,'slots'), orderBy('name')),
+    snap => {
+      // sort: first by sortOrder (if present), then by name
+      slots = snap.docs
+        .map(d=>({id:d.id, ...d.data()}))
+        .sort((a,b)=>{
+          const so = (a.sortOrder||999) - (b.sortOrder||999);
+          return so !== 0 ? so : (a.name||'').localeCompare(b.name||'');
+        });
+      afterSlotsLoaded();
+    },
+    err => { console.error('slots listener', err); }
+  );
+
+  // items — order by name
+  onSnapshot(
+    query(collection(db,'items'), orderBy('name')),
+    snap => {
+      items = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      renderDrawerItems();
+      renderBrowse();
+      setSyncStatus('ok','Synced');
+    },
+    err => { console.error('items listener', err); setSyncStatus('err','Offline'); }
+  );
+}
+
+function afterContainersLoaded(){
+  refreshTypeChips();
+  refreshContainerDropdowns();
+}
+
+function afterSlotsLoaded(){
+  refreshSlotDropdowns();
+  // if location modal is open, re-render it
   if(g('modal-locations').classList.contains('open')) renderLocManage();
 }
 
-// ── Tabs ───────────────────────────────────────────────────
-window.switchTab=function(tab){
+// ─────────────────────────────────────────────────────────────
+// Seed default data on first run
+// ─────────────────────────────────────────────────────────────
+async function seedDefaults(){
+  try{
+    const gc = await addDoc(collection(db,'containers'),{name:'Garage Freezer',  type:'freezer'});
+    const kc = await addDoc(collection(db,'containers'),{name:'Kitchen Freezer', type:'freezer'});
+    const fc = await addDoc(collection(db,'containers'),{name:'Fridge',          type:'fridge'});
+    const pc = await addDoc(collection(db,'containers'),{name:'Cupboards',       type:'cupboard'});
+    const seeds = [
+      {name:'GF1 – Quick Freeze',containerId:gc.id,sortOrder:1},
+      {name:'GF2 – Meat',        containerId:gc.id,sortOrder:2},
+      {name:'GF3 – Veg & Fish',  containerId:gc.id,sortOrder:3},
+      {name:'GF4 – Bottom',      containerId:gc.id,sortOrder:4},
+      {name:'KF1 – Top',         containerId:kc.id,sortOrder:1},
+      {name:'KF2 – Middle',      containerId:kc.id,sortOrder:2},
+      {name:'KF3 – Bottom',      containerId:kc.id,sortOrder:3},
+      {name:'Top shelf',         containerId:fc.id,sortOrder:1},
+      {name:'Middle shelf',      containerId:fc.id,sortOrder:2},
+      {name:'Bottom shelf',      containerId:fc.id,sortOrder:3},
+      {name:'Door',              containerId:fc.id,sortOrder:4},
+      {name:'Salad drawer',      containerId:fc.id,sortOrder:5},
+      {name:'Shelf 1',           containerId:pc.id,sortOrder:1},
+      {name:'Shelf 2',           containerId:pc.id,sortOrder:2},
+      {name:'Shelf 3',           containerId:pc.id,sortOrder:3},
+    ];
+    for(const s of seeds) await addDoc(collection(db,'slots'), s);
+    toast('✅ Default locations created');
+  }catch(e){ toast('Seed error: '+e.message); }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Modals
+// ─────────────────────────────────────────────────────────────
+window.openLocModal = function(){
+  renderLocManage();
+  g('modal-locations').classList.add('open');
+};
+window.showModal  = function(id){ g(id).classList.add('open'); };
+window.closeModal = function(id){ g(id).classList.remove('open'); };
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click', e=>{ if(e.target===el) el.classList.remove('open'); });
+});
+
+// ─────────────────────────────────────────────────────────────
+// Tabs
+// ─────────────────────────────────────────────────────────────
+window.switchTab = function(tab){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   g('page-'+tab).classList.add('active');
@@ -687,27 +744,36 @@ window.switchTab=function(tab){
   if(tab==='drawer') renderDrawerItems();
 };
 
-// ── Quantity +/- ───────────────────────────────────────────
-window.changeQty=function(ctx,d){
+// ─────────────────────────────────────────────────────────────
+// Quantity +/-
+// ─────────────────────────────────────────────────────────────
+window.changeQty = function(ctx, d){
   if(ctx==='add'){
-    addQtyVal=Math.max(0,addQtyVal+d);
+    addQtyVal = Math.max(0, addQtyVal+d);
     const el=g('add-qty'); el.textContent=addQtyVal; el.className='qty-val'+(addQtyVal===0?' zero':'');
   } else {
-    editQtyVal=Math.max(0,editQtyVal+d);
+    editQtyVal = Math.max(0, editQtyVal+d);
     const el=g('edit-qty'); el.textContent=editQtyVal; el.className='qty-val'+(editQtyVal===0?' zero':'');
   }
 };
 
-// ── Type chips (container-type buttons) ────────────────────
+// ─────────────────────────────────────────────────────────────
+// Type chips (container-type buttons: Freezer / Fridge / etc.)
+// ─────────────────────────────────────────────────────────────
 function renderTypeChips(containerId, selectedTypeId, onClickFn){
-  const el=g(containerId); if(!el) return;
-  const types=[...new Set(containers.map(c=>c.type))];
-  el.innerHTML=types.map(type=>{
-    const sel=selectedTypeId===type;
-    const col=TYPE_COLORS[type]||'#888';
-    return `<span class="type-chip"
-      style="${sel?'background:'+col+';border-color:'+col+';color:#fff':'color:#1a1a1a'}"
-      onclick="${onClickFn}('${type}')">
+  const el = g(containerId); if(!el) return;
+  const types = [...new Set(containers.map(c=>c.type))];
+  if(!types.length){
+    el.innerHTML='<span style="font-size:13px;color:#aaa">No locations yet — tap ⚙️ to add some</span>';
+    return;
+  }
+  el.innerHTML = types.map(type=>{
+    const sel = selectedTypeId===type;
+    const col = TYPE_COLORS[type]||'#888';
+    const style = sel
+      ? `background:${col};border-color:${col};color:#fff`
+      : `background:#f0f2f5;border:1px solid #ddd;color:#1a1a1a`;
+    return `<span class="type-chip" style="${style}" onclick="${onClickFn}('${type}')">
       ${TYPE_ICONS[type]||'📦'} ${TYPE_LABELS[type]||type}
     </span>`;
   }).join('');
@@ -720,22 +786,29 @@ function refreshTypeChips(){
   renderTypeChips('edit-type-chips',   editTypeId,   'selectEditType');
 }
 
-// ── Slot dropdowns ─────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Slot <select> dropdowns
+// ─────────────────────────────────────────────────────────────
+function slotsForType(typeId){
+  const cids = containers.filter(c=>c.type===typeId).map(c=>c.id);
+  return slots.filter(s=>cids.includes(s.containerId));
+}
+
 function populateSlotSelect(selectId, typeId, selectedSlotId){
-  const el=g(selectId); if(!el||!typeId) return;
-  const cids=containers.filter(c=>c.type===typeId).map(c=>c.id);
-  const relevant=slots.filter(s=>cids.includes(s.containerId));
-  el.innerHTML='<option value="">— choose —</option>';
-  // Group by container name
-  const grouped={};
+  const el = g(selectId); if(!el) return;
+  el.innerHTML = '<option value="">— choose —</option>';
+  if(!typeId) return;
+  const relevant = slotsForType(typeId);
+  // group by container
+  const grouped = {};
   relevant.forEach(s=>{
-    const cn=containers.find(c=>c.id===s.containerId)?.name||'?';
+    const cn = containers.find(c=>c.id===s.containerId)?.name||'?';
     (grouped[cn]=grouped[cn]||[]).push(s);
   });
   Object.entries(grouped).forEach(([cn,slist])=>{
-    const grp=document.createElement('optgroup'); grp.label=cn;
+    const grp = document.createElement('optgroup'); grp.label=cn;
     slist.forEach(s=>{
-      const o=document.createElement('option');
+      const o = document.createElement('option');
       o.value=s.id; o.textContent=s.name;
       if(s.id===selectedSlotId) o.selected=true;
       grp.appendChild(o);
@@ -751,13 +824,15 @@ function refreshSlotDropdowns(){
   if(editTypeId)   populateSlotSelect('edit-slot-select',   editTypeId,   editSlotId);
 }
 
-// ── Container dropdown in locations modal ──────────────────
+// ─────────────────────────────────────────────────────────────
+// Container dropdowns in the locations modal
+// ─────────────────────────────────────────────────────────────
 function refreshContainerDropdowns(){
-  // main "select existing container" dropdown in modal
-  const sel=g('new-loc-container');
+  // "select existing container" in Add-slot form
+  const sel = g('new-loc-container');
   if(sel){
-    const prev=sel.value;
-    sel.innerHTML='<option value="">— select existing —</option>';
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— choose —</option>';
     containers.forEach(c=>{
       const o=document.createElement('option');
       o.value=c.id; o.textContent=`${TYPE_ICONS[c.type]||'📦'} ${c.name}`;
@@ -765,10 +840,10 @@ function refreshContainerDropdowns(){
     });
     if(prev) sel.value=prev;
   }
-  // edit-slot container dropdown
-  const esel=g('edit-slot-container');
+  // container dropdown in edit-slot modal
+  const esel = g('edit-slot-container');
   if(esel){
-    const prev=esel.value;
+    const prev = esel.value;
     esel.innerHTML='';
     containers.forEach(c=>{
       const o=document.createElement('option');
@@ -779,74 +854,73 @@ function refreshContainerDropdowns(){
   }
 }
 
-window.newContainerChanged=function(){
-  // if user picked an existing container, hide the "create new" fields
-  const val=g('new-loc-container').value;
-  g('new-container-fields').style.display=val?'none':'block';
-};
-
-// ── Type selection callbacks (global) ──────────────────────
-window.selectAddType=function(type){
+// ─────────────────────────────────────────────────────────────
+// Type selection callbacks (called from inline onclick)
+// ─────────────────────────────────────────────────────────────
+window.selectAddType = function(type){
   addTypeId=type; addSlotId=null;
   refreshTypeChips();
   populateSlotSelect('add-slot-select',type,null);
   g('add-slot-row').style.display='block';
   g('add-slot-select').value='';
 };
-window.addSlotChanged=function(){addSlotId=g('add-slot-select').value||null;};
+window.addSlotChanged = function(){ addSlotId = g('add-slot-select').value||null; };
 
-window.selectDrawerType=function(type){
+window.selectDrawerType = function(type){
   drawerTypeId=type; drawerSlotId=null;
   renderTypeChips('drawer-type-chips',type,'selectDrawerType');
   populateSlotSelect('drawer-slot-select',type,null);
   g('drawer-slot-card').style.display='block';
   g('drawer-items').innerHTML='';
 };
-window.drawerSlotChanged=function(){drawerSlotId=g('drawer-slot-select').value||null;renderDrawerItems();};
+window.drawerSlotChanged = function(){
+  drawerSlotId = g('drawer-slot-select').value||null;
+  renderDrawerItems();
+};
 
-window.selectVoiceType=function(type){
+window.selectVoiceType = function(type){
   voiceTypeId=type; voiceSlotId=null;
   renderTypeChips('voice-type-chips',type,'selectVoiceType');
   populateSlotSelect('voice-slot-select',type,null);
   g('voice-slot-row').style.display='block';
 };
 
-window.selectEditType=function(type){
+window.selectEditType = function(type){
   editTypeId=type;
   renderTypeChips('edit-type-chips',type,'selectEditType');
   populateSlotSelect('edit-slot-select',type,editSlotId);
 };
 
-// ── Item card HTML ─────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Item card HTML
+// ─────────────────────────────────────────────────────────────
 function slotInfo(slotId){
-  const slot=slots.find(s=>s.id===slotId);
-  if(!slot) return{slotName:'',container:null};
-  return{slotName:slot.name, container:containers.find(c=>c.id===slot.containerId)||null};
+  const slot = slots.find(s=>s.id===slotId);
+  if(!slot) return {slotName:'', container:null};
+  return {slotName:slot.name, container:containers.find(c=>c.id===slot.containerId)||null};
 }
 
-function expiryInfo(dateStr,ctype){
+function expiryInfo(dateStr, ctype){
   if(!dateStr) return null;
   const now=new Date(); now.setHours(0,0,0,0);
   const exp=new Date(dateStr); exp.setHours(0,0,0,0);
   const diff=Math.round((exp-now)/86400000);
   const warn=EXP_WARN[ctype]||7;
-  if(diff<0)      return{cls:'b-pink', text:`Expired ${Math.abs(diff)}d ago`};
-  if(diff<=warn)  return{cls:'b-warn', text:`Exp in ${diff}d`};
+  if(diff<0)     return {cls:'b-pink', text:`Expired ${Math.abs(diff)}d ago`};
+  if(diff<=warn) return {cls:'b-warn', text:`Exp in ${diff}d`};
   return null;
 }
 
 function itemCardHTML(item){
-  const{slotName,container}=slotInfo(item.slotId);
-  const ctype=container?.type||'other';
-  const locBadge=container?`<span class="badge ${BADGE_CLASS[ctype]}">${TYPE_ICONS[ctype]} ${esc(container.name)}</span>`:'';
-  const slotBadge=slotName?`<span class="badge b-gray">📍 ${esc(slotName)}</span>`:'';
-  const qty=item.qty??1;
-  const qtyBadge=`<span class="${qty===0?'b-qty-zero':'b-qty-ok'}">×${qty}</span>`;
-  const exp=expiryInfo(item.dateExp,ctype);
-  const parts=[];
-  if(item.dateIn)  parts.push('In: '+item.dateIn);
-  if(item.dateExp) parts.push('Use by: '+item.dateExp);
-  const dateLine=parts.length?`<span style="color:#bbb;font-size:11px">${parts.join(' · ')}</span>`:'';
+  const {slotName,container} = slotInfo(item.slotId);
+  const ctype   = container?.type||'other';
+  const locBadge  = container ? `<span class="badge ${BADGE_CLASS[ctype]}">${TYPE_ICONS[ctype]} ${esc(container.name)}</span>` : '';
+  const slotBadge = slotName  ? `<span class="badge b-gray">📍 ${esc(slotName)}</span>` : '';
+  const qty       = item.qty??1;
+  const qtyBadge  = `<span class="${qty===0?'b-qty-zero':'b-qty-ok'}">×${qty}</span>`;
+  const exp       = expiryInfo(item.dateExp, ctype);
+  const parts=[]; if(item.dateIn) parts.push('In: '+item.dateIn); if(item.dateExp) parts.push('Use by: '+item.dateExp);
+  const dateLine  = parts.length ? `<span style="color:#bbb;font-size:11px">${parts.join(' · ')}</span>` : '';
   return `<div class="item-card ${CARD_CLASS[ctype]||'t-other'}">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div style="flex:1;min-width:0">
@@ -864,37 +938,41 @@ function itemCardHTML(item){
   </div>`;
 }
 
-// ── Location tab ───────────────────────────────────────────
-window.renderDrawerItems=function(){
-  const el=g('drawer-items');
-  if(!drawerSlotId){el.innerHTML='';return;}
-  const list=items.filter(i=>i.slotId===drawerSlotId);
+// ─────────────────────────────────────────────────────────────
+// Location tab
+// ─────────────────────────────────────────────────────────────
+window.renderDrawerItems = function(){
+  const el = g('drawer-items');
+  if(!drawerSlotId){ el.innerHTML=''; return; }
+  const list = items.filter(i=>i.slotId===drawerSlotId);
   if(!list.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>No items here yet.</p></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>No items here yet.<br>Tap Bulk add to fill this drawer.</p></div>';
     return;
   }
-  el.innerHTML=list.map(i=>itemCardHTML(i)).join('');
+  el.innerHTML = list.map(i=>itemCardHTML(i)).join('');
 };
 
-// ── Browse tab ─────────────────────────────────────────────
-window.renderBrowse=function(){
-  const q=(g('browse-search')?.value||'').toLowerCase();
-  const sort=g('browse-sort')?.value||'name';
-  const qop=g('qty-filter-op')?.value||'any';
-  const qval=parseInt(g('qty-filter-val')?.value??'0');
+// ─────────────────────────────────────────────────────────────
+// Browse tab
+// ─────────────────────────────────────────────────────────────
+window.renderBrowse = function(){
+  const q    = (g('browse-search')?.value||'').toLowerCase();
+  const sort = g('browse-sort')?.value||'name';
+  const qop  = g('qty-filter-op')?.value||'any';
+  const qval = parseInt(g('qty-filter-val')?.value??'0');
 
-  let list=[...items];
+  let list = [...items];
 
   // text search
-  if(q) list=list.filter(i=>{
-    const{slotName,container}=slotInfo(i.slotId);
+  if(q) list = list.filter(i=>{
+    const {slotName,container} = slotInfo(i.slotId);
     return (i.name+' '+slotName+' '+(container?.name||'')).toLowerCase().includes(q);
   });
 
   // qty filter
   if(qop!=='any'){
-    list=list.filter(i=>{
-      const iq=i.qty??1;
+    list = list.filter(i=>{
+      const iq = i.qty??1;
       if(qop==='eq')  return iq===qval;
       if(qop==='lte') return iq<=qval;
       if(qop==='gte') return iq>=qval;
@@ -910,68 +988,124 @@ window.renderBrowse=function(){
     if(sort==='qty-asc')  return (a.qty??1)-(b.qty??1);
     if(sort==='qty-desc') return (b.qty??1)-(a.qty??1);
     if(sort==='loc'){
-      const{container:ca,slotName:sa}=slotInfo(a.slotId);
-      const{container:cb,slotName:sb}=slotInfo(b.slotId);
+      const {container:ca,slotName:sa} = slotInfo(a.slotId);
+      const {container:cb,slotName:sb} = slotInfo(b.slotId);
       return ((ca?.name||'')+(sa||'')).localeCompare((cb?.name||'')+(sb||''));
     }
     return 0;
   });
 
-  const el=g('browse-list');
-  g('browse-count').textContent=list.length+' item'+(list.length!==1?'s':'');
+  browseVisible = list;   // keep for shopping list export
+
+  const el = g('browse-list');
+  g('browse-count').textContent = list.length+' item'+(list.length!==1?'s':'');
 
   if(!list.length){
     el.innerHTML=`<div class="empty"><div class="empty-icon">${items.length?'🔍':'📦'}</div>
       <p>${items.length?'No items match.':'No items yet — go to Add to get started.'}</p></div>`;
     return;
   }
-  el.innerHTML=list.map(i=>itemCardHTML(i)).join('');
+  el.innerHTML = list.map(i=>itemCardHTML(i)).join('');
 };
 
-// ── Save new item ──────────────────────────────────────────
-window.saveNewItem=async function(){
-  const name=(g('add-name').value||'').trim();
-  if(!name){toast('⚠️ Please enter a name');return;}
-  if(!addSlotId){toast('⚠️ Please choose a drawer/shelf');return;}
+window.clearQtyFilter = function(){
+  g('qty-filter-op').value='any';
+  renderBrowse();
+};
+
+// ─────────────────────────────────────────────────────────────
+// Shopping list export
+// ─────────────────────────────────────────────────────────────
+window.exportShoppingList = function(){
+  const list = browseVisible.length ? browseVisible : items;
+  if(!list.length){ toast('No items to export'); return; }
+
+  const lines = ['SHOPPING LIST', '='.repeat(30), ''];
+  list.forEach(item=>{
+    const {slotName,container} = slotInfo(item.slotId);
+    const loc = [container?.name, slotName].filter(Boolean).join(' › ');
+    const qty = item.qty??1;
+    lines.push(`• ${item.name}${qty>0?' (×'+qty+')':''}${loc?' — '+loc:''}`);
+  });
+  lines.push('');
+  lines.push('Generated: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}));
+
+  const text = lines.join('\n');
+  g('shopping-text').value = text;
+  g('share-note').style.display = navigator.share ? 'block' : 'none';
+  showModal('modal-shopping');
+};
+
+window.copyShoppingList = function(){
+  const el = g('shopping-text');
+  el.select();
+  try{
+    document.execCommand('copy');
+    toast('✅ Copied to clipboard');
+  }catch(e){
+    navigator.clipboard?.writeText(el.value).then(()=>toast('✅ Copied')).catch(()=>toast('Copy failed — select text manually'));
+  }
+};
+
+window.shareShoppingList = function(){
+  const text = g('shopping-text').value;
+  if(navigator.share){
+    navigator.share({title:'Shopping list', text}).catch(()=>{});
+  } else {
+    // fallback — mailto
+    const mailto = 'mailto:?subject=Shopping+list&body='+encodeURIComponent(text);
+    window.location.href = mailto;
+  }
+};
+
+// ─────────────────────────────────────────────────────────────
+// Save new item
+// ─────────────────────────────────────────────────────────────
+window.saveNewItem = async function(){
+  const name = (g('add-name').value||'').trim();
+  if(!name)     { toast('⚠️ Please enter a name'); return; }
+  if(!addSlotId){ toast('⚠️ Please choose a drawer/shelf'); return; }
   try{
     await addDoc(collection(db,'items'),{
       name,
-      barcode:(g('add-barcode').value||'').trim(),
-      slotId: addSlotId,
-      qty:    addQtyVal,
-      dateIn: g('add-date-in').value,
-      dateExp:g('add-date-exp').value,
-      notes:  (g('add-notes').value||'').trim(),
-      updatedAt: new Date().toISOString()
+      barcode:  (g('add-barcode').value||'').trim(),
+      slotId:   addSlotId,
+      qty:      addQtyVal,
+      dateIn:   g('add-date-in').value,
+      dateExp:  g('add-date-exp').value,
+      notes:    (g('add-notes').value||'').trim(),
+      updatedAt:new Date().toISOString()
     });
     g('add-name').value=''; g('add-barcode').value='';
     g('add-notes').value=''; g('add-date-exp').value='';
     g('add-date-in').value=today();
     addQtyVal=1; const qe=g('add-qty'); qe.textContent='1'; qe.className='qty-val';
     stopScan(); toast('✅ Saved!');
-  }catch(e){toast('Error: '+e.message);}
+  }catch(e){ toast('Error saving: '+e.message); }
 };
 
-// ── Edit item modal ────────────────────────────────────────
-window.openEditModal=function(id){
-  const item=items.find(i=>i.id===id); if(!item) return;
+// ─────────────────────────────────────────────────────────────
+// Edit item modal
+// ─────────────────────────────────────────────────────────────
+window.openEditModal = function(id){
+  const item = items.find(i=>i.id===id); if(!item) return;
   editingItemId=id; editQtyVal=item.qty??1;
-  const{container}=slotInfo(item.slotId);
+  const {container} = slotInfo(item.slotId);
   editTypeId=container?.type||null; editSlotId=item.slotId||null;
-  g('edit-name').value=item.name||'';
+  g('edit-name').value     = item.name||'';
+  g('edit-date-in').value  = item.dateIn||'';
+  g('edit-date-exp').value = item.dateExp||'';
+  g('edit-notes').value    = item.notes||'';
   const eq=g('edit-qty'); eq.textContent=editQtyVal; eq.className='qty-val'+(editQtyVal===0?' zero':'');
-  g('edit-date-in').value=item.dateIn||'';
-  g('edit-date-exp').value=item.dateExp||'';
-  g('edit-notes').value=item.notes||'';
-  renderTypeChips('edit-type-chips',editTypeId,'selectEditType');
-  populateSlotSelect('edit-slot-select',editTypeId,editSlotId);
+  renderTypeChips('edit-type-chips', editTypeId, 'selectEditType');
+  populateSlotSelect('edit-slot-select', editTypeId, editSlotId);
   showModal('modal-edit');
 };
 
-window.saveEdit=async function(){
-  const name=(g('edit-name').value||'').trim();
-  if(!name){toast('⚠️ Name required');return;}
-  const slotId=g('edit-slot-select').value||editSlotId;
+window.saveEdit = async function(){
+  const name = (g('edit-name').value||'').trim();
+  if(!name){ toast('⚠️ Name required'); return; }
+  const slotId = g('edit-slot-select').value || editSlotId;
   try{
     await setDoc(doc(db,'items',editingItemId),{
       name, slotId, qty:editQtyVal,
@@ -980,31 +1114,41 @@ window.saveEdit=async function(){
       updatedAt:new Date().toISOString()
     },{merge:true});
     closeModal('modal-edit'); toast('✅ Updated');
-  }catch(e){toast('Error: '+e.message);}
+  }catch(e){ toast('Error: '+e.message); }
 };
 
-window.deleteItem=async function(){
+window.deleteItem = async function(){
   if(!confirm('Delete this item?')) return;
-  try{await deleteDoc(doc(db,'items',editingItemId));closeModal('modal-edit');toast('🗑 Deleted');}
-  catch(e){toast('Error: '+e.message);}
+  try{ await deleteDoc(doc(db,'items',editingItemId)); closeModal('modal-edit'); toast('🗑 Deleted'); }
+  catch(e){ toast('Error: '+e.message); }
 };
 
-// ── Locations manager ──────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Locations manager modal
+// ─────────────────────────────────────────────────────────────
 function renderLocManage(){
   refreshContainerDropdowns();
-  const el=g('loc-manage-list'); if(!el) return;
-  const grouped={};
-  containers.forEach(c=>{grouped[c.id]={container:c,slots:[]};});
-  slots.forEach(s=>{if(grouped[s.containerId]) grouped[s.containerId].slots.push(s);});
+  const el = g('loc-manage-list'); if(!el) return;
 
-  el.innerHTML=Object.values(grouped).map(({container:c,slots:ss})=>{
-    const col=TYPE_COLORS[c.type]||'#888';
-    const slotRows=ss.length
-      ? ss.map(s=>`<div class="loc-row">
-          <span class="loc-row-name">📍 ${esc(s.name)}</span>
-          <button class="btn btn-secondary btn-sm" onclick="openSlotEdit('${s.id}')">Edit</button>
-        </div>`).join('')
-      : '<div style="font-size:13px;color:#aaa;padding:4px 10px">No drawers/shelves yet</div>';
+  if(!containers.length){
+    el.innerHTML='<p style="color:#aaa;font-size:13px">No containers yet. Create one below.</p>';
+    return;
+  }
+
+  // Build grouped view
+  const grouped = {};
+  containers.forEach(c=>{ grouped[c.id]={container:c, slots:[]}; });
+  slots.forEach(s=>{ if(grouped[s.containerId]) grouped[s.containerId].slots.push(s); });
+
+  el.innerHTML = Object.values(grouped).map(({container:c, slots:ss})=>{
+    const col = TYPE_COLORS[c.type]||'#888';
+    const slotRows = ss.length
+      ? ss.map(s=>`
+          <div class="loc-row">
+            <span class="loc-row-name">📍 ${esc(s.name)}</span>
+            <button class="btn btn-secondary btn-sm" onclick="openSlotEdit('${s.id}')">Edit</button>
+          </div>`).join('')
+      : '<p style="font-size:13px;color:#aaa;padding:4px 10px 4px">No drawers/shelves yet — add one below</p>';
     return `<div class="loc-group">
       <div class="loc-group-hdr" style="background:${col}">
         <span class="loc-group-title">${TYPE_ICONS[c.type]||'📦'} ${esc(c.name)}</span>
@@ -1014,120 +1158,109 @@ function renderLocManage(){
   }).join('');
 }
 
-// Watch the slot name input to show/hide autonumber tool
-document.getElementById('new-slot-name').addEventListener('input', function(){
-  g('autonumber-box').style.display=this.value.trim()?'block':'none';
-});
-
-window.newContainerChanged=function(){
-  const val=g('new-loc-container').value;
-  g('new-container-fields').style.display=val?'none':'block';
+// Show/hide auto-number tool as user types slot name
+window.slotNameTyped = function(){
+  const val = (g('new-slot-name').value||'').trim();
+  g('autonumber-box').style.display = val ? 'block' : 'none';
 };
 
-window.addSlot=async function(){
-  const slotName=(g('new-slot-name').value||'').trim();
-  if(!slotName){toast('Enter a drawer/shelf name');return;}
+// Resolve which containerId to use for a new slot
+async function resolveContainerId(){
+  let containerId = g('new-loc-container').value;
+  if(containerId) return containerId;   // using existing container
+  const newName = (g('new-container-name').value||'').trim();
+  if(!newName){ toast('Select a container or enter a new container name'); return null; }
+  const type = g('new-container-type').value;
+  const ref = await addDoc(collection(db,'containers'),{name:newName, type});
+  g('new-container-name').value='';
+  return ref.id;
+}
 
-  // Resolve container
-  let containerId=g('new-loc-container').value;
-  if(!containerId){
-    const newName=(g('new-container-name').value||'').trim();
-    if(!newName){toast('Select or name a container first');return;}
-    const type=g('new-container-type').value;
-    const ref=await addDoc(collection(db,'containers'),{name:newName,type});
-    containerId=ref.id;
-    g('new-container-name').value='';
-  }
-
-  const existing=slots.filter(s=>s.containerId===containerId);
-  await addDoc(collection(db,'slots'),{name:slotName,containerId,sortOrder:existing.length+1});
-  g('new-slot-name').value='';
-  g('autonumber-box').style.display='none';
-  toast('✅ Drawer/shelf added');
-  // renderLocManage called automatically via onSnapshot
+window.addOneSlot = async function(){
+  const slotName = (g('new-slot-name').value||'').trim();
+  if(!slotName){ toast('Enter a drawer/shelf name'); return; }
+  const containerId = await resolveContainerId();
+  if(!containerId) return;
+  const existing = slots.filter(s=>s.containerId===containerId);
+  try{
+    await addDoc(collection(db,'slots'),{name:slotName, containerId, sortOrder:existing.length+1});
+    g('new-slot-name').value='';
+    g('autonumber-box').style.display='none';
+    toast('✅ Drawer/shelf added');
+  }catch(e){ toast('Error: '+e.message); }
 };
 
-// Auto-number: generate a sequence of drawers from the first name
-window.autoNumberSlots=async function(){
-  const firstName=(g('new-slot-name').value||'').trim();
-  if(!firstName){toast('Enter the first drawer name first');return;}
-  const count=parseInt(g('autonumber-count').value||'4');
-  if(count<2||count>20){toast('Count must be 2–20');return;}
+window.autoNumberSlots = async function(){
+  const firstName = (g('new-slot-name').value||'').trim();
+  if(!firstName){ toast('Enter the first drawer name first'); return; }
+  const count = parseInt(g('autonumber-count').value||'4');
+  if(count<2||count>20){ toast('Count must be 2–20'); return; }
 
-  // Extract prefix and number: "GF1" → prefix="GF", num=1
-  // Also handle "GF1 – Quick Freeze" → prefix="GF", num=1, suffix=" – Quick Freeze"
-  const m=firstName.match(/^([A-Za-z]+)(\d+)(.*)/);
-  if(!m){toast('Name must start with letters then a number, e.g. GF1');return;}
+  // Parse: "GF1" or "GF1 – Meat" → prefix=GF, startNum=1, suffix=" – Meat"
+  const m = firstName.match(/^([A-Za-z]+)(\d+)(.*)/);
+  if(!m){ toast('Name must start with letters then a number, e.g. GF1 or KF1'); return; }
   const prefix=m[1], startNum=parseInt(m[2]), suffix=m[3];
 
-  let containerId=g('new-loc-container').value;
-  if(!containerId){
-    const newName=(g('new-container-name').value||'').trim();
-    if(!newName){toast('Select or name a container first');return;}
-    const type=g('new-container-type').value;
-    const ref=await addDoc(collection(db,'containers'),{name:newName,type});
-    containerId=ref.id;
-    g('new-container-name').value='';
-  }
+  const containerId = await resolveContainerId();
+  if(!containerId) return;
 
-  const existing=slots.filter(s=>s.containerId===containerId);
-  let order=existing.length+1;
+  const existing = slots.filter(s=>s.containerId===containerId);
+  let order = existing.length+1;
   for(let i=0;i<count;i++){
-    const name=`${prefix}${startNum+i}${suffix||''}`;
-    await addDoc(collection(db,'slots'),{name,containerId,sortOrder:order++});
+    const name = `${prefix}${startNum+i}${suffix||''}`;
+    await addDoc(collection(db,'slots'),{name, containerId, sortOrder:order++});
   }
   g('new-slot-name').value='';
   g('autonumber-box').style.display='none';
   toast(`✅ ${count} drawers created`);
 };
 
-window.openSlotEdit=function(id){
-  const slot=slots.find(s=>s.id===id); if(!slot) return;
+window.openSlotEdit = function(id){
+  const slot = slots.find(s=>s.id===id); if(!slot) return;
   editingSlotId=id;
-  g('edit-slot-name').value=slot.name||'';
+  g('edit-slot-name').value = slot.name||'';
   refreshContainerDropdowns();
-  const esel=g('edit-slot-container');
-  if(esel) esel.value=slot.containerId||'';
+  const esel=g('edit-slot-container'); if(esel) esel.value=slot.containerId||'';
   showModal('modal-edit-slot');
 };
 
-window.saveSlotEdit=async function(){
-  const name=(g('edit-slot-name').value||'').trim();
-  if(!name){toast('Name required');return;}
-  const containerId=g('edit-slot-container').value;
+window.saveSlotEdit = async function(){
+  const name = (g('edit-slot-name').value||'').trim();
+  if(!name){ toast('Name required'); return; }
+  const containerId = g('edit-slot-container').value;
   try{
     await updateDoc(doc(db,'slots',editingSlotId),{name,containerId});
     closeModal('modal-edit-slot'); toast('✅ Updated');
-  }catch(e){toast('Error: '+e.message);}
+  }catch(e){ toast('Error: '+e.message); }
 };
 
-window.deleteSlot=async function(){
-  const hasItems=items.some(i=>i.slotId===editingSlotId);
+window.deleteSlot = async function(){
+  const hasItems = items.some(i=>i.slotId===editingSlotId);
   if(hasItems&&!confirm('This drawer has items. Delete them too?')) return;
   try{
-    if(hasItems) for(const item of items.filter(i=>i.slotId===editingSlotId))
-      await deleteDoc(doc(db,'items',item.id));
+    if(hasItems)
+      for(const item of items.filter(i=>i.slotId===editingSlotId))
+        await deleteDoc(doc(db,'items',item.id));
     await deleteDoc(doc(db,'slots',editingSlotId));
     closeModal('modal-edit-slot'); toast('🗑 Deleted');
-  }catch(e){toast('Error: '+e.message);}
+  }catch(e){ toast('Error: '+e.message); }
 };
 
-// ── Bulk add ───────────────────────────────────────────────
-window.openBulkModal=function(){
-  bulkSlotId=drawerSlotId;
-  if(!bulkSlotId){toast('Choose a drawer first');return;}
+// ─────────────────────────────────────────────────────────────
+// Bulk add
+// ─────────────────────────────────────────────────────────────
+window.openBulkModal = function(){
+  bulkSlotId=drawerSlotId; if(!bulkSlotId){ toast('Choose a drawer first'); return; }
   const slot=slots.find(s=>s.id===bulkSlotId);
   g('bulk-loc-name').textContent=slot?.name||'';
-  g('bulk-text').value='';
-  g('bulk-date-in').value=today();
+  g('bulk-text').value=''; g('bulk-date-in').value=today();
   showModal('modal-bulk');
 };
 
-window.saveBulk=async function(){
-  const lines=g('bulk-text').value.split('\n').map(l=>l.trim()).filter(Boolean);
-  if(!lines.length){toast('Enter at least one item');return;}
-  const dateIn=g('bulk-date-in').value;
-  let count=0;
+window.saveBulk = async function(){
+  const lines = g('bulk-text').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length){ toast('Enter at least one item'); return; }
+  const dateIn=g('bulk-date-in').value; let count=0;
   for(const line of lines){
     const m=line.match(/^(.+?)\s+[xX*]?\s*(\d+)$/)||line.match(/^(.+?)\s+(\d+)$/);
     const name=m?m[1].trim():line, qty=m?parseInt(m[2]):1;
@@ -1137,20 +1270,21 @@ window.saveBulk=async function(){
   closeModal('modal-bulk'); toast(`✅ ${count} item${count!==1?'s':''} added`);
 };
 
-// ── Barcode scanner ────────────────────────────────────────
-window.startScan=async function(){
-  if(!navigator.mediaDevices){toast('Camera not available — use Chrome');return;}
-  g('scanner-ui').style.display='none';
-  g('scanner-active').style.display='block';
+// ─────────────────────────────────────────────────────────────
+// Barcode scanner
+// ─────────────────────────────────────────────────────────────
+window.startScan = async function(){
+  if(!navigator.mediaDevices){ toast('Camera not available — use Chrome'); return; }
+  g('scanner-ui').style.display='none'; g('scanner-active').style.display='block';
   const vid=g('scanner-video'); vid.style.display='block';
   try{
     scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
     vid.srcObject=scanStream; await vid.play(); startQuagga(vid);
-  }catch(e){toast('Camera error: '+e.message);stopScan();}
+  }catch(e){ toast('Camera error: '+e.message); stopScan(); }
 };
 
 function startQuagga(vid){
-  if(!window.Quagga){setTimeout(()=>startQuagga(vid),500);return;}
+  if(!window.Quagga){ setTimeout(()=>startQuagga(vid),500); return; }
   Quagga.init({
     inputStream:{type:'LiveStream',target:vid,constraints:{facingMode:'environment'}},
     decoder:{readers:['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader']},
@@ -1163,7 +1297,7 @@ function startQuagga(vid){
   });
 }
 
-window.stopScan=function(){
+window.stopScan = function(){
   if(scanRunning){try{Quagga.stop();}catch(e){}scanRunning=false;}
   if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
   const vid=g('scanner-video'); vid.srcObject=null; vid.style.display='none';
@@ -1176,7 +1310,7 @@ async function lookupBarcode(code){
     const d=await r.json();
     if(d.status===1&&d.product){
       const n=d.product.product_name||d.product.generic_name||'';
-      if(n&&!g('add-name').value){g('add-name').value=n;toast('✅ Found: '+n);}
+      if(n&&!g('add-name').value){ g('add-name').value=n; toast('✅ Found: '+n); }
       const exp=d.product.expiration_date;
       if(exp){const p=parseExpiry(exp);if(p)g('add-date-exp').value=p;}
     }
@@ -1191,28 +1325,30 @@ function parseExpiry(s){
   return null;
 }
 
-// ── Voice input ────────────────────────────────────────────
-window.toggleVoice=function(){isListening?stopVoice():startVoice();};
+// ─────────────────────────────────────────────────────────────
+// Voice input
+// ─────────────────────────────────────────────────────────────
+window.toggleVoice = function(){ isListening ? stopVoice() : startVoice(); };
 
 function startVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('Voice recognition needs Chrome');return;}
+  if(!SR){ toast('Voice recognition needs Chrome'); return; }
   const slotId=g('voice-slot-select')?.value;
-  if(!slotId){toast('⚠️ Choose a drawer/shelf first');return;}
+  if(!slotId){ toast('⚠️ Choose a drawer/shelf first'); return; }
   voiceSlotId=slotId;
   recognition=new SR(); recognition.continuous=true; recognition.interimResults=true; recognition.lang='en-GB';
-  recognition.onstart=()=>{isListening=true;g('voice-btn').classList.add('listening');g('voice-status').textContent='🎙 Listening…';};
-  recognition.onend=()=>{if(isListening)recognition.start();};
-  recognition.onerror=e=>{if(e.error!=='aborted')toast('Voice error: '+e.error);};
+  recognition.onstart=()=>{ isListening=true; g('voice-btn').classList.add('listening'); g('voice-status').textContent='🎙 Listening…'; };
+  recognition.onend=()=>{ if(isListening) recognition.start(); };
+  recognition.onerror=e=>{ if(e.error!=='aborted') toast('Voice error: '+e.error); };
   recognition.onresult=e=>{
     let final='',interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal)final+=e.results[i][0].transcript;
       else interim+=e.results[i][0].transcript;
     }
-    if(interim)g('voice-result').textContent=interim;
+    if(interim) g('voice-result').textContent=interim;
     if(final){
-      if(['done','finish','finished','stop','end'].includes(final.trim().toLowerCase())){stopVoice();return;}
+      if(['done','finish','finished','stop','end'].includes(final.trim().toLowerCase())){ stopVoice(); return; }
       g('voice-result').textContent=final;
       final.split(/[,\n]|(?:\band\b)/i).map(s=>s.trim()).filter(s=>s.length>1).forEach(addVoiceItem);
     }
@@ -1229,52 +1365,49 @@ function stopVoice(){
 
 function addVoiceItem(name){
   name=name.charAt(0).toUpperCase()+name.slice(1);
-  voiceQueue.push({
-    id:'v'+Date.now()+Math.random().toString(36).slice(2,5),
-    name, slotId:voiceSlotId, qty:1,
-    dateIn:today(), dateExp:'', barcode:'', notes:'',
-    updatedAt:new Date().toISOString()
-  });
+  voiceQueue.push({id:'v'+Date.now()+Math.random().toString(36).slice(2,5),name,slotId:voiceSlotId,qty:1,dateIn:today(),dateExp:'',barcode:'',notes:'',updatedAt:new Date().toISOString()});
   renderVoiceQueue();
 }
 
 function renderVoiceQueue(){
   const el=g('voice-queue-list'), con=g('voice-queue-container');
-  if(!voiceQueue.length){con.style.display='none';return;}
+  if(!voiceQueue.length){ con.style.display='none'; return; }
   con.style.display='block';
   g('voice-queue-title').textContent=`Queue (${voiceQueue.length} item${voiceQueue.length!==1?'s':''} — tap to remove)`;
-  el.innerHTML=voiceQueue.map((item,idx)=>
-    `<div class="item-card" style="cursor:pointer" onclick="removeVoiceItem(${idx})">
+  el.innerHTML=voiceQueue.map((item,idx)=>`
+    <div class="item-card" style="cursor:pointer" onclick="removeVoiceItem(${idx})">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span class="item-name">${esc(item.name)}</span>
         <span style="color:#aaa;font-size:12px">✕ remove</span>
       </div>
-    </div>`
-  ).join('');
+    </div>`).join('');
 }
 
-window.removeVoiceItem=function(idx){voiceQueue.splice(idx,1);renderVoiceQueue();};
+window.removeVoiceItem = function(idx){ voiceQueue.splice(idx,1); renderVoiceQueue(); };
 
-window.saveVoiceQueue=async function(){
-  if(!voiceQueue.length){toast('Nothing in queue');return;}
+window.saveVoiceQueue = async function(){
+  if(!voiceQueue.length){ toast('Nothing in queue'); return; }
   let count=0;
-  for(const item of voiceQueue){const{id,...data}=item;await addDoc(collection(db,'items'),data);count++;}
+  for(const item of voiceQueue){ const{id,...data}=item; await addDoc(collection(db,'items'),data); count++; }
   voiceQueue=[]; renderVoiceQueue();
   g('voice-result').textContent='Speech will appear here…';
   toast(`✅ ${count} item${count!==1?'s':''} saved!`);
 };
-window.clearVoiceQueue=function(){voiceQueue=[];renderVoiceQueue();};
+window.clearVoiceQueue = function(){ voiceQueue=[]; renderVoiceQueue(); };
 
-// ── Startup ────────────────────────────────────────────────
-const saved=loadConfig();
+// ─────────────────────────────────────────────────────────────
+// Startup
+// ─────────────────────────────────────────────────────────────
+const saved = loadConfig();
 if(saved) initFirebase(saved);
 else g('config-screen').style.display='block';
-g('add-date-in').value=today();
+g('add-date-in').value = today();
 </script>
 
 <script>
+// Service worker — bump CACHE_VER to force clients to reload after deploy
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 </script>
 </body>
