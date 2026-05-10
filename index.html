@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Kitchen Inventory v1.4 — generated 2026-04-15 15:04 UTC -->
+<!-- Kitchen Inventory v1.5 — generated 2026-05-10 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Kitchen Inv">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Kitchen Inventory v1.4</title>
+<title>Kitchen Inventory v1.5</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
@@ -42,13 +42,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   background-repeat:no-repeat;background-position:right 10px center;padding-right:28px
 }
 
-/* Fix #1 — dates left, save button right */
+/* ── CHANGE 1: Scanner + Save side-by-side row ────────── */
+/* Compact scanner box — sits left, about 72% width        */
+.scanner-save-row{display:flex;gap:8px;align-items:stretch;margin-bottom:10px}
+.scanner-compact{flex:1;border:2px dashed #c5d8ef;border-radius:10px;padding:8px 10px;background:#f8fbff;display:flex;align-items:center;gap:8px}
+.scanner-compact #scanner-video{width:100%;border-radius:6px;max-height:140px;object-fit:cover;display:none}
+#scanner-ui-inner{display:flex;align-items:center;gap:8px;width:100%}
+#scanner-ui-inner .cam-icon{font-size:24px;flex-shrink:0}
+.scanner-compact button{white-space:nowrap}
+.save-col{flex:0 0 78px;display:flex}
+.btn-save-tall{width:100%;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;line-height:1.5;padding:6px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.btn-save-tall:active{opacity:0.75}
+.btn-save-tall .save-tick{font-size:20px}
+
+/* ── CHANGE 2: Leftovers toggle button ─────────────────── */
+.leftovers-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.btn-leftover{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid #e67e22;background:#fff;color:#e67e22;font-family:inherit;transition:all 0.15s}
+.btn-leftover.active{background:#e67e22;color:#fff}
+.btn-leftover:active{opacity:0.75}
+/* Leftover badge in Browse */
+.b-leftover{background:#fff3cd;color:#b7600a;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:2px}
+
+/* dates / save layout */
 .dates-save-row{display:flex;gap:8px;align-items:stretch;margin-bottom:10px}
 .dates-col{display:flex;flex-direction:column;gap:8px;flex:1}
 .dates-col .field{margin-bottom:0}
-.save-col{flex:0 0 88px;display:flex}
-.btn-save-tall{width:100%;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;line-height:1.4;padding:6px 4px}
-.btn-save-tall:active{opacity:0.75}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit}
 .btn:active{opacity:0.75}
@@ -97,8 +115,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.4)}60%{box-shadow:0 0 0 16px rgba(192,57,43,0)}}
 .voice-result{min-height:44px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:10px;font-size:14px;color:#555;margin:10px 0;line-height:1.5}
 
-.scanner-box{border:2px dashed #c5d8ef;border-radius:12px;padding:14px;text-align:center;background:#f8fbff;margin-bottom:10px}
-#scanner-video{width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:none}
+/* scanner video now lives inside scanner-compact */
+#scanner-video{width:100%;border-radius:6px;max-height:140px;object-fit:cover;display:none}
 
 .toast{position:fixed;bottom:64px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -160,15 +178,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
         <line x1="55" y1="30" x2="44" y2="37" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
       <h1 style="font-size:22px;font-weight:700;margin-top:10px">Kitchen Inventory</h1>
-      <p style="font-size:13px;color:#888;margin-top:2px">v1.4 — 2026-04-15</p>
+      <p style="font-size:13px;color:#888;margin-top:2px">v1.5 — 2026-05-10</p>
     </div>
     <div class="cfg-card">
       <h2>📋 Setup steps</h2>
       <div class="step-row"><span class="step-num">1</span><span>Go to <strong>console.firebase.google.com</strong> and sign in with Google.</span></div>
       <div class="step-row"><span class="step-num">2</span><span>Click <strong>Add project</strong> → name it <em>kitchen-inventory</em> → disable Analytics → <strong>Create project</strong>.</span></div>
-      <div class="step-row"><span class="step-num">3</span><span>Sidebar: <strong>Firestore</strong> → <strong>Create database</strong> → <strong>Start in test mode</strong> → <em>europe-west2</em> → <strong>Enable</strong>.</span></div>
-      <div class="step-row"><span class="step-num">4</span><span>Project overview: click <strong>&lt;/&gt;</strong> → nickname <em>kitchen-app</em> → <strong>Register app</strong>.</span></div>
-      <div class="step-row"><span class="step-num">5</span><span>Paste the four config values below.</span></div>
+      <div class="step-row"><span class="step-num">3</span><span>Sidebar: <strong>Firestore</strong> → <strong>Create database</strong> → <strong>Start in production mode</strong> → <em>europe-west2</em> → <strong>Enable</strong>.</span></div>
+      <div class="step-row"><span class="step-num">4</span><span>In Firestore, click <strong>Rules</strong> tab. Replace all the text with the rules shown in the box below, then click <strong>Publish</strong>.</span></div>
+      <div class="step-row"><span class="step-num">5</span><span>Project overview: click <strong>&lt;/&gt;</strong> → nickname <em>kitchen-app</em> → <strong>Register app</strong>.</span></div>
+      <div class="step-row"><span class="step-num">6</span><span>Paste the four config values below.</span></div>
+    </div>
+    <div class="cfg-card" style="background:#fffbe6;border:1px solid #ffe58f">
+      <h2>🔒 Firestore security rules</h2>
+      <p style="font-size:12px;color:#666;margin-bottom:8px">Copy and paste these into the <strong>Rules</strong> tab in Firestore Console, then click <strong>Publish</strong>. This locks the database to your two phones only (no sign-in needed, but no random internet access either).</p>
+      <textarea readonly style="width:100%;min-height:160px;font-family:monospace;font-size:11px;padding:8px;border:1px solid #ddd;border-radius:6px;background:#f8f8f8;color:#333;resize:none">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only allow reads and writes from your app's domain.
+    // Replace YOUR_PROJECT_ID with your actual Firebase project ID.
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2030, 1, 1)
+        && (
+          request.headers.origin == null ||
+          request.headers.origin.matches('https://pwpw1956\\.github\\.io.*')
+        );
+    }
+  }
+}</textarea>
+      <p style="font-size:12px;color:#b7600a;margin-top:8px">⚠️ If you move the app to a different domain in future, update the origin in these rules to match.</p>
     </div>
     <div class="cfg-card">
       <h2>🔑 Firebase credentials</h2>
@@ -227,17 +265,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
     <div class="page active" id="page-add">
       <div class="card">
         <div class="card-title">Scan or enter item</div>
-        <div class="scanner-box">
-          <video id="scanner-video" playsinline muted autoplay></video>
-          <div id="scanner-ui">
-            <div style="font-size:32px;margin-bottom:6px">📷</div>
-            <p style="font-size:12px;color:#888;margin-bottom:10px">Scan barcode to auto-fill details</p>
-            <button class="btn btn-primary" onclick="startScan()">Scan barcode</button>
+
+        <!-- CHANGE 1: Compact scanner left, tall Save button right -->
+        <div class="scanner-save-row">
+          <div class="scanner-compact">
+            <video id="scanner-video" playsinline muted autoplay></video>
+            <div id="scanner-ui">
+              <div id="scanner-ui-inner">
+                <span class="cam-icon">📷</span>
+                <button class="btn btn-primary btn-sm" onclick="startScan()">Scan barcode</button>
+              </div>
+            </div>
+            <div id="scanner-active" style="display:none">
+              <button class="btn btn-secondary btn-sm" onclick="stopScan()">✕ Stop</button>
+            </div>
           </div>
-          <div id="scanner-active" style="display:none;margin-top:8px">
-            <button class="btn btn-secondary" onclick="stopScan()">✕ Stop scanning</button>
+          <div class="save-col">
+            <button class="btn-save-tall" onclick="saveNewItem()">
+              <span class="save-tick">✓</span>
+              <span>Save</span>
+              <span>item</span>
+            </button>
           </div>
         </div>
+
+        <!-- CHANGE 2: Leftovers toggle -->
+        <div class="leftovers-row">
+          <button class="btn-leftover" id="btn-leftover" onclick="toggleLeftover()">🍲 Leftovers</button>
+          <span style="font-size:12px;color:#aaa" id="leftover-hint">Tap if this is leftovers rather than a pack</span>
+        </div>
+
         <div class="field">
           <label>Item name *</label>
           <input type="text" id="add-name" placeholder="e.g. Peas, Leftover lasagne…" autocomplete="off">
@@ -272,7 +329,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
             <span style="font-size:12px;color:#888;margin-left:6px">portion(s)/pack(s)</span>
           </div>
         </div>
-        <!-- dates left, save right -->
         <div class="dates-save-row">
           <div class="dates-col">
             <div class="field">
@@ -283,9 +339,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
               <label>Use by (optional)</label>
               <input type="date" id="add-date-exp">
             </div>
-          </div>
-          <div class="save-col">
-            <button class="btn-save-tall" onclick="saveNewItem()">✓<br>Save<br>item</button>
           </div>
         </div>
         <div class="field">
@@ -330,20 +383,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
           <option value="qty-desc">Qty ↓</option>
         </select>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;background:#fff;border-radius:8px;padding:7px 10px;border:1px solid #ddd;flex-wrap:wrap">
-        <label style="font-size:13px;color:#555;white-space:nowrap">Filter qty:</label>
+
+      <!-- CHANGE 3: Filter bar — single line, narrower qty field, Leftovers filter added -->
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;background:#fff;border-radius:8px;padding:6px 10px;border:1px solid #ddd;flex-wrap:nowrap;overflow-x:auto">
+        <label style="font-size:12px;color:#555;white-space:nowrap">Filter:</label>
         <select id="qty-filter-op" onchange="renderBrowse()"
-          style="padding:5px 22px 5px 7px;border:1px solid #ddd;border-radius:6px;font-size:13px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 5px center;-webkit-appearance:none;font-family:inherit;color:#1a1a1a">
+          style="padding:4px 20px 4px 6px;border:1px solid #ddd;border-radius:6px;font-size:12px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 4px center;-webkit-appearance:none;font-family:inherit;color:#1a1a1a;flex-shrink:0">
           <option value="any">Any qty</option>
           <option value="eq">= exact</option>
           <option value="lte">≤ or less</option>
           <option value="gte">≥ or more</option>
         </select>
         <input type="number" id="qty-filter-val" min="0" value="0" oninput="renderBrowse()"
-          style="width:52px;padding:5px 8px;border:1px solid #ddd;border-radius:6px;font-size:14px;text-align:center;font-family:inherit">
-        <button class="btn btn-secondary btn-sm" onclick="clearQtyFilter()">Clear</button>
-        <button class="btn btn-warn btn-sm" onclick="exportShoppingList()" style="margin-left:auto">🛒 Shopping list</button>
+          style="width:36px;padding:4px 4px;border:1px solid #ddd;border-radius:6px;font-size:13px;text-align:center;font-family:inherit;flex-shrink:0">
+        <select id="leftover-filter" onchange="renderBrowse()"
+          style="padding:4px 20px 4px 6px;border:1px solid #ddd;border-radius:6px;font-size:12px;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M1 1l4 4 4-4%22 stroke=%22%23888%22 stroke-width=%221.5%22 fill=%22none%22/%3E%3C/svg%3E') no-repeat right 4px center;-webkit-appearance:none;font-family:inherit;color:#1a1a1a;flex-shrink:0">
+          <option value="all">All items</option>
+          <option value="leftovers">🍲 Leftovers</option>
+          <option value="packs">Packs only</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="clearQtyFilter()" style="padding:4px 8px;font-size:12px;flex-shrink:0">Clear</button>
+        <button class="btn btn-warn btn-sm" onclick="exportShoppingList()" style="margin-left:auto;padding:4px 8px;font-size:12px;white-space:nowrap;flex-shrink:0">🛒 List</button>
       </div>
+
       <div style="font-size:12px;color:#aaa;margin-bottom:6px" id="browse-count"></div>
       <div id="browse-list"></div>
     </div>
@@ -379,7 +441,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   </div><!-- /pages -->
 </div><!-- /app -->
 
-<div id="ver-badge">v1.4 · 2026-04-15</div>
+<div id="ver-badge">v1.5 · 2026-05-10</div>
 <div class="toast" id="toast"></div>
 
 <!-- ── LOCATIONS MODAL ──────────────────────────────────── -->
@@ -387,14 +449,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Manage locations</div>
-
-    <!-- Live list of containers + their slots -->
     <div id="loc-manage-list"><p style="color:#aaa;font-size:13px">Loading…</p></div>
-
     <hr style="border:none;border-top:1px solid #eee;margin:14px 0">
     <p style="font-size:13px;font-weight:600;margin-bottom:10px">Add a drawer / shelf</p>
-
-    <!-- Step 1: pick or create container -->
     <div class="field">
       <label>1. Select an existing container</label>
       <select id="new-loc-container" class="slot-select">
@@ -415,16 +472,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
         </select>
       </div>
     </div>
-
-    <!-- Step 2: name the slot -->
     <div class="field">
       <label>2. Drawer / shelf name *</label>
       <input type="text" id="new-slot-name" placeholder="e.g. GF1, Top shelf…"
         style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit"
         oninput="slotNameTyped()">
     </div>
-
-    <!-- Auto-number tool -->
     <div class="autonumber-box" id="autonumber-box" style="display:none">
       <p>🔢 Auto-number a run of drawers from this name</p>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
@@ -435,7 +488,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       </div>
       <p style="font-size:12px;color:#888;margin-top:6px">Tip: type <em>GF1</em> to get GF1, GF2, GF3… or <em>GF1 – Meat</em> and edit names afterwards.</p>
     </div>
-
     <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="addOneSlot()">＋ Add this drawer / shelf</button>
     <button class="btn btn-secondary btn-full" onclick="closeModal('modal-locations')">Done</button>
   </div>
@@ -472,6 +524,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;f
       <label>Name *</label>
       <input type="text" id="edit-name"
         style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit">
+    </div>
+    <!-- Leftovers toggle in edit modal -->
+    <div class="field">
+      <label>Type</label>
+      <button class="btn-leftover" id="edit-btn-leftover" onclick="toggleEditLeftover()" style="margin-top:2px">🍲 Leftovers</button>
     </div>
     <div class="field">
       <label>Container type</label>
@@ -553,9 +610,9 @@ import {
 // State
 // ─────────────────────────────────────────────────────────────
 let db = null;
-let containers = [];   // [{id, name, type}]  — fetched via onSnapshot, sorted in JS
-let slots      = [];   // [{id, name, containerId, sortOrder}]  — sorted in JS only
-let items      = [];   // [{id, name, slotId, qty, dateIn, dateExp, notes, barcode}]
+let containers = [];
+let slots      = [];
+let items      = [];
 
 let addQtyVal=1, editQtyVal=1;
 let addTypeId=null, editTypeId=null, voiceTypeId=null, drawerTypeId=null;
@@ -563,8 +620,8 @@ let addSlotId=null, editSlotId=null, voiceSlotId=null, drawerSlotId=null;
 let editingItemId=null, editingSlotId=null, bulkSlotId=null;
 let voiceQueue=[], recognition=null, isListening=false;
 let scanStream=null, scanRunning=false;
+let addIsLeftover=false, editIsLeftover=false;  // CHANGE 2
 
-// Items visible in browse (used for shopping list export)
 let browseVisible = [];
 
 const EXP_WARN   = {freezer:7, fridge:3, cupboard:14, other:7};
@@ -589,6 +646,23 @@ function setSyncStatus(state,text){
   g('sync-dot').className='sync-dot '+state;
   g('sync-text').textContent=text;
 }
+
+// ─────────────────────────────────────────────────────────────
+// CHANGE 2: Leftovers toggle
+// ─────────────────────────────────────────────────────────────
+window.toggleLeftover = function(){
+  addIsLeftover = !addIsLeftover;
+  const btn = g('btn-leftover');
+  btn.classList.toggle('active', addIsLeftover);
+  g('leftover-hint').textContent = addIsLeftover
+    ? '✅ Marked as leftovers'
+    : 'Tap if this is leftovers rather than a pack';
+};
+
+window.toggleEditLeftover = function(){
+  editIsLeftover = !editIsLeftover;
+  g('edit-btn-leftover').classList.toggle('active', editIsLeftover);
+};
 
 // ─────────────────────────────────────────────────────────────
 // Firebase init
@@ -629,30 +703,21 @@ async function initFirebase(cfg){
 
 // ─────────────────────────────────────────────────────────────
 // Firestore listeners
-// NOTE: we ONLY use orderBy on a single field to avoid the
-// composite-index requirement. All secondary sorting is in JS.
 // ─────────────────────────────────────────────────────────────
 function startListeners(){
-  // containers — order by name (single field, no index needed)
   onSnapshot(
     query(collection(db,'containers'), orderBy('name')),
     snap => {
       containers = snap.docs.map(d=>({id:d.id, ...d.data()}));
-      if(containers.length === 0){
-        seedDefaults();
-      } else {
-        afterContainersLoaded();
-      }
+      if(containers.length === 0){ seedDefaults(); } else { afterContainersLoaded(); }
       setSyncStatus('ok','Synced');
     },
     err => { console.error('containers listener', err); setSyncStatus('err','Offline'); }
   );
 
-  // slots — order by name only (sortOrder secondary sort done in JS)
   onSnapshot(
     query(collection(db,'slots'), orderBy('name')),
     snap => {
-      // sort: first by sortOrder (if present), then by name
       slots = snap.docs
         .map(d=>({id:d.id, ...d.data()}))
         .sort((a,b)=>{
@@ -664,7 +729,6 @@ function startListeners(){
     err => { console.error('slots listener', err); }
   );
 
-  // items — order by name
   onSnapshot(
     query(collection(db,'items'), orderBy('name')),
     snap => {
@@ -684,12 +748,11 @@ function afterContainersLoaded(){
 
 function afterSlotsLoaded(){
   refreshSlotDropdowns();
-  // if location modal is open, re-render it
   if(g('modal-locations').classList.contains('open')) renderLocManage();
 }
 
 // ─────────────────────────────────────────────────────────────
-// Seed default data on first run
+// Seed defaults
 // ─────────────────────────────────────────────────────────────
 async function seedDefaults(){
   try{
@@ -758,7 +821,7 @@ window.changeQty = function(ctx, d){
 };
 
 // ─────────────────────────────────────────────────────────────
-// Type chips (container-type buttons: Freezer / Fridge / etc.)
+// Type chips
 // ─────────────────────────────────────────────────────────────
 function renderTypeChips(containerId, selectedTypeId, onClickFn){
   const el = g(containerId); if(!el) return;
@@ -787,7 +850,7 @@ function refreshTypeChips(){
 }
 
 // ─────────────────────────────────────────────────────────────
-// Slot <select> dropdowns
+// Slot dropdowns
 // ─────────────────────────────────────────────────────────────
 function slotsForType(typeId){
   const cids = containers.filter(c=>c.type===typeId).map(c=>c.id);
@@ -799,7 +862,6 @@ function populateSlotSelect(selectId, typeId, selectedSlotId){
   el.innerHTML = '<option value="">— choose —</option>';
   if(!typeId) return;
   const relevant = slotsForType(typeId);
-  // group by container
   const grouped = {};
   relevant.forEach(s=>{
     const cn = containers.find(c=>c.id===s.containerId)?.name||'?';
@@ -824,11 +886,7 @@ function refreshSlotDropdowns(){
   if(editTypeId)   populateSlotSelect('edit-slot-select',   editTypeId,   editSlotId);
 }
 
-// ─────────────────────────────────────────────────────────────
-// Container dropdowns in the locations modal
-// ─────────────────────────────────────────────────────────────
 function refreshContainerDropdowns(){
-  // "select existing container" in Add-slot form
   const sel = g('new-loc-container');
   if(sel){
     const prev = sel.value;
@@ -840,7 +898,6 @@ function refreshContainerDropdowns(){
     });
     if(prev) sel.value=prev;
   }
-  // container dropdown in edit-slot modal
   const esel = g('edit-slot-container');
   if(esel){
     const prev = esel.value;
@@ -855,7 +912,7 @@ function refreshContainerDropdowns(){
 }
 
 // ─────────────────────────────────────────────────────────────
-// Type selection callbacks (called from inline onclick)
+// Type selection callbacks
 // ─────────────────────────────────────────────────────────────
 window.selectAddType = function(type){
   addTypeId=type; addSlotId=null;
@@ -892,7 +949,7 @@ window.selectEditType = function(type){
 };
 
 // ─────────────────────────────────────────────────────────────
-// Item card HTML
+// Item card HTML  (CHANGE 2: leftover badge)
 // ─────────────────────────────────────────────────────────────
 function slotInfo(slotId){
   const slot = slots.find(s=>s.id===slotId);
@@ -921,6 +978,8 @@ function itemCardHTML(item){
   const exp       = expiryInfo(item.dateExp, ctype);
   const parts=[]; if(item.dateIn) parts.push('In: '+item.dateIn); if(item.dateExp) parts.push('Use by: '+item.dateExp);
   const dateLine  = parts.length ? `<span style="color:#bbb;font-size:11px">${parts.join(' · ')}</span>` : '';
+  // CHANGE 2: leftover badge shown left of Edit button
+  const leftoverBadge = item.isLeftover ? `<span class="b-leftover">🍲 Leftover</span>` : '';
   return `<div class="item-card ${CARD_CLASS[ctype]||'t-other'}">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div style="flex:1;min-width:0">
@@ -932,8 +991,10 @@ function itemCardHTML(item){
         </div>
         ${item.notes?`<div style="font-size:11px;color:#aaa;margin-top:2px;font-style:italic">${esc(item.notes)}</div>`:''}
       </div>
-      <button class="btn btn-secondary btn-sm" style="margin-left:8px;flex-shrink:0"
-        onclick="openEditModal('${item.id}')">Edit</button>
+      <div style="display:flex;align-items:center;gap:6px;margin-left:8px;flex-shrink:0">
+        ${leftoverBadge}
+        <button class="btn btn-secondary btn-sm" onclick="openEditModal('${item.id}')">Edit</button>
+      </div>
     </div>
   </div>`;
 }
@@ -953,13 +1014,14 @@ window.renderDrawerItems = function(){
 };
 
 // ─────────────────────────────────────────────────────────────
-// Browse tab
+// Browse tab  (CHANGE 3: leftover filter added)
 // ─────────────────────────────────────────────────────────────
 window.renderBrowse = function(){
   const q    = (g('browse-search')?.value||'').toLowerCase();
   const sort = g('browse-sort')?.value||'name';
   const qop  = g('qty-filter-op')?.value||'any';
   const qval = parseInt(g('qty-filter-val')?.value??'0');
+  const lfilt= g('leftover-filter')?.value||'all';  // CHANGE 2
 
   let list = [...items];
 
@@ -980,6 +1042,10 @@ window.renderBrowse = function(){
     });
   }
 
+  // CHANGE 2: leftover filter
+  if(lfilt==='leftovers') list = list.filter(i=>i.isLeftover===true);
+  if(lfilt==='packs')     list = list.filter(i=>!i.isLeftover);
+
   // sort
   list.sort((a,b)=>{
     if(sort==='name')     return (a.name||'').localeCompare(b.name||'');
@@ -995,7 +1061,7 @@ window.renderBrowse = function(){
     return 0;
   });
 
-  browseVisible = list;   // keep for shopping list export
+  browseVisible = list;
 
   const el = g('browse-list');
   g('browse-count').textContent = list.length+' item'+(list.length!==1?'s':'');
@@ -1010,6 +1076,7 @@ window.renderBrowse = function(){
 
 window.clearQtyFilter = function(){
   g('qty-filter-op').value='any';
+  g('leftover-filter').value='all';
   renderBrowse();
 };
 
@@ -1019,17 +1086,16 @@ window.clearQtyFilter = function(){
 window.exportShoppingList = function(){
   const list = browseVisible.length ? browseVisible : items;
   if(!list.length){ toast('No items to export'); return; }
-
   const lines = ['SHOPPING LIST', '='.repeat(30), ''];
   list.forEach(item=>{
     const {slotName,container} = slotInfo(item.slotId);
     const loc = [container?.name, slotName].filter(Boolean).join(' › ');
     const qty = item.qty??1;
-    lines.push(`• ${item.name}${qty>0?' (×'+qty+')':''}${loc?' — '+loc:''}`);
+    const lo  = item.isLeftover ? ' [Leftover]' : '';
+    lines.push(`• ${item.name}${qty>0?' (×'+qty+')':''}${lo}${loc?' — '+loc:''}`);
   });
   lines.push('');
   lines.push('Generated: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}));
-
   const text = lines.join('\n');
   g('shopping-text').value = text;
   g('share-note').style.display = navigator.share ? 'block' : 'none';
@@ -1052,14 +1118,13 @@ window.shareShoppingList = function(){
   if(navigator.share){
     navigator.share({title:'Shopping list', text}).catch(()=>{});
   } else {
-    // fallback — mailto
     const mailto = 'mailto:?subject=Shopping+list&body='+encodeURIComponent(text);
     window.location.href = mailto;
   }
 };
 
 // ─────────────────────────────────────────────────────────────
-// Save new item
+// Save new item  (CHANGE 2: isLeftover field)
 // ─────────────────────────────────────────────────────────────
 window.saveNewItem = async function(){
   const name = (g('add-name').value||'').trim();
@@ -1068,35 +1133,42 @@ window.saveNewItem = async function(){
   try{
     await addDoc(collection(db,'items'),{
       name,
-      barcode:  (g('add-barcode').value||'').trim(),
-      slotId:   addSlotId,
-      qty:      addQtyVal,
-      dateIn:   g('add-date-in').value,
-      dateExp:  g('add-date-exp').value,
-      notes:    (g('add-notes').value||'').trim(),
-      updatedAt:new Date().toISOString()
+      barcode:    (g('add-barcode').value||'').trim(),
+      slotId:     addSlotId,
+      qty:        addQtyVal,
+      isLeftover: addIsLeftover,
+      dateIn:     g('add-date-in').value,
+      dateExp:    g('add-date-exp').value,
+      notes:      (g('add-notes').value||'').trim(),
+      updatedAt:  new Date().toISOString()
     });
+    // reset form
     g('add-name').value=''; g('add-barcode').value='';
     g('add-notes').value=''; g('add-date-exp').value='';
     g('add-date-in').value=today();
     addQtyVal=1; const qe=g('add-qty'); qe.textContent='1'; qe.className='qty-val';
+    addIsLeftover=false;
+    g('btn-leftover').classList.remove('active');
+    g('leftover-hint').textContent='Tap if this is leftovers rather than a pack';
     stopScan(); toast('✅ Saved!');
   }catch(e){ toast('Error saving: '+e.message); }
 };
 
 // ─────────────────────────────────────────────────────────────
-// Edit item modal
+// Edit item modal  (CHANGE 2: isLeftover)
 // ─────────────────────────────────────────────────────────────
 window.openEditModal = function(id){
   const item = items.find(i=>i.id===id); if(!item) return;
   editingItemId=id; editQtyVal=item.qty??1;
   const {container} = slotInfo(item.slotId);
   editTypeId=container?.type||null; editSlotId=item.slotId||null;
+  editIsLeftover = item.isLeftover===true;
   g('edit-name').value     = item.name||'';
   g('edit-date-in').value  = item.dateIn||'';
   g('edit-date-exp').value = item.dateExp||'';
   g('edit-notes').value    = item.notes||'';
   const eq=g('edit-qty'); eq.textContent=editQtyVal; eq.className='qty-val'+(editQtyVal===0?' zero':'');
+  g('edit-btn-leftover').classList.toggle('active', editIsLeftover);
   renderTypeChips('edit-type-chips', editTypeId, 'selectEditType');
   populateSlotSelect('edit-slot-select', editTypeId, editSlotId);
   showModal('modal-edit');
@@ -1109,6 +1181,7 @@ window.saveEdit = async function(){
   try{
     await setDoc(doc(db,'items',editingItemId),{
       name, slotId, qty:editQtyVal,
+      isLeftover: editIsLeftover,
       dateIn:g('edit-date-in').value, dateExp:g('edit-date-exp').value,
       notes:(g('edit-notes').value||'').trim(),
       updatedAt:new Date().toISOString()
@@ -1129,17 +1202,13 @@ window.deleteItem = async function(){
 function renderLocManage(){
   refreshContainerDropdowns();
   const el = g('loc-manage-list'); if(!el) return;
-
   if(!containers.length){
     el.innerHTML='<p style="color:#aaa;font-size:13px">No containers yet. Create one below.</p>';
     return;
   }
-
-  // Build grouped view
   const grouped = {};
   containers.forEach(c=>{ grouped[c.id]={container:c, slots:[]}; });
   slots.forEach(s=>{ if(grouped[s.containerId]) grouped[s.containerId].slots.push(s); });
-
   el.innerHTML = Object.values(grouped).map(({container:c, slots:ss})=>{
     const col = TYPE_COLORS[c.type]||'#888';
     const slotRows = ss.length
@@ -1158,16 +1227,14 @@ function renderLocManage(){
   }).join('');
 }
 
-// Show/hide auto-number tool as user types slot name
 window.slotNameTyped = function(){
   const val = (g('new-slot-name').value||'').trim();
   g('autonumber-box').style.display = val ? 'block' : 'none';
 };
 
-// Resolve which containerId to use for a new slot
 async function resolveContainerId(){
   let containerId = g('new-loc-container').value;
-  if(containerId) return containerId;   // using existing container
+  if(containerId) return containerId;
   const newName = (g('new-container-name').value||'').trim();
   if(!newName){ toast('Select a container or enter a new container name'); return null; }
   const type = g('new-container-type').value;
@@ -1195,15 +1262,11 @@ window.autoNumberSlots = async function(){
   if(!firstName){ toast('Enter the first drawer name first'); return; }
   const count = parseInt(g('autonumber-count').value||'4');
   if(count<2||count>20){ toast('Count must be 2–20'); return; }
-
-  // Parse: "GF1" or "GF1 – Meat" → prefix=GF, startNum=1, suffix=" – Meat"
   const m = firstName.match(/^([A-Za-z]+)(\d+)(.*)/);
   if(!m){ toast('Name must start with letters then a number, e.g. GF1 or KF1'); return; }
   const prefix=m[1], startNum=parseInt(m[2]), suffix=m[3];
-
   const containerId = await resolveContainerId();
   if(!containerId) return;
-
   const existing = slots.filter(s=>s.containerId===containerId);
   let order = existing.length+1;
   for(let i=0;i<count;i++){
@@ -1264,7 +1327,7 @@ window.saveBulk = async function(){
   for(const line of lines){
     const m=line.match(/^(.+?)\s+[xX*]?\s*(\d+)$/)||line.match(/^(.+?)\s+(\d+)$/);
     const name=m?m[1].trim():line, qty=m?parseInt(m[2]):1;
-    await addDoc(collection(db,'items'),{name,qty,slotId:bulkSlotId,dateIn,dateExp:'',barcode:'',notes:'',updatedAt:new Date().toISOString()});
+    await addDoc(collection(db,'items'),{name,qty,slotId:bulkSlotId,dateIn,dateExp:'',barcode:'',notes:'',isLeftover:false,updatedAt:new Date().toISOString()});
     count++;
   }
   closeModal('modal-bulk'); toast(`✅ ${count} item${count!==1?'s':''} added`);
@@ -1365,7 +1428,7 @@ function stopVoice(){
 
 function addVoiceItem(name){
   name=name.charAt(0).toUpperCase()+name.slice(1);
-  voiceQueue.push({id:'v'+Date.now()+Math.random().toString(36).slice(2,5),name,slotId:voiceSlotId,qty:1,dateIn:today(),dateExp:'',barcode:'',notes:'',updatedAt:new Date().toISOString()});
+  voiceQueue.push({id:'v'+Date.now()+Math.random().toString(36).slice(2,5),name,slotId:voiceSlotId,qty:1,isLeftover:false,dateIn:today(),dateExp:'',barcode:'',notes:'',updatedAt:new Date().toISOString()});
   renderVoiceQueue();
 }
 
@@ -1405,7 +1468,6 @@ g('add-date-in').value = today();
 </script>
 
 <script>
-// Service worker — bump CACHE_VER to force clients to reload after deploy
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
